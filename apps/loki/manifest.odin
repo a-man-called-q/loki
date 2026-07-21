@@ -14,7 +14,11 @@ Vendor_Entry :: struct {
 }
 
 App_Config :: struct {
-	flags: []string,
+	flags:   []string,
+	// targets is a list of PLATFORMS ids to cross-compile this app for.
+	// Empty/absent means "build for the host only" — loki's original,
+	// single-binary behaviour.
+	targets: []string `json:"targets,omitempty"`,
 }
 
 Manifest :: struct {
@@ -63,4 +67,19 @@ save_manifest :: proc(project_root: string, m: Manifest) -> bool {
 		return false
 	}
 	return os.write_entire_file(path, data) == nil
+}
+
+// manifest_app_targets looks up apps[name].targets in project_root's
+// loki.json. Returns nil if there's no manifest, no entry for name, or no
+// targets set — meaning "build for the host only".
+manifest_app_targets :: proc(project_root: string, name: string) -> []string {
+	m, ok := load_manifest(project_root, context.temp_allocator)
+	if !ok {
+		return nil
+	}
+	cfg, found := m.apps[name]
+	if !found {
+		return nil
+	}
+	return cfg.targets
 }

@@ -53,6 +53,40 @@ loki build
 | `loki test [target]`           | Test a package, or every local package if omitted       |
 | `loki doctor`                  | Check that the environment is set up correctly          |
 
+## Cross-compiling
+
+`loki new` and `loki new app` accept a `--target=` flag; leave it off and
+you'll get an interactive picker instead (space to toggle, enter to
+confirm — press enter without picking anything to build for the host only):
+
+```bash
+loki new app cli --target=linux_amd64,windows_amd64
+```
+
+Supported ids:
+
+| id               | platform                    | notes                              |
+| ----------------- | ---------------------------- | ----------------------------------- |
+| `darwin_arm64`     | macOS (Apple Silicon)         |                                     |
+| `darwin_amd64`     | macOS (Intel)                 |                                     |
+| `linux_amd64`      | Linux (x86_64)                |                                     |
+| `linux_arm64`      | Linux (arm64)                 |                                     |
+| `windows_amd64`    | Windows (x86_64)              |                                     |
+| `web`              | Web (WASM)                    |                                     |
+| `ios`              | iOS (device)                  | needs Xcode's command line tools    |
+| `ios_simulator`    | iOS (simulator)               | needs Xcode's command line tools    |
+| `android`          | Android (arm64)               | needs `ANDROID_NDK_HOME` set        |
+
+Chosen targets are recorded per app in `loki.json`, and `loki build` builds
+each one to `bin/<app>-<target-id>` instead of overwriting a single
+`bin/<app>`. `loki doctor` checks whether the toolchain for each declared
+target actually looks ready (Xcode CLT for iOS, `ANDROID_NDK_HOME` for
+Android).
+
+Note that Odin's own cross-linking support varies by target — `loki build`
+treats "compiled but nothing was linked" as a failure rather than the silent
+success `odin build` currently reports for those combinations.
+
 ## Project layout
 
 ```

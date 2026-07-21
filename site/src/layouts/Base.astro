@@ -1,0 +1,70 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  activeNav?: "home" | "changelog";
+}
+
+const { title, description, activeNav } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="wrap topbar-row">
+        <a href={`${base}/`} class="wordmark" style="color: inherit;">loki<span>_</span></a>
+        <nav class="topbar-links">
+          <a href={`${base}/`} class={activeNav === "home" ? "current" : ""}>home</a>
+          <a href={`${base}/changelog`} class={activeNav === "changelog" ? "current" : ""}>changelog</a>
+          <a href="https://github.com/a-man-called-q/loki">github</a>
+          <button id="theme-toggle" type="button" aria-label="Toggle color theme">◐</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <div class="wrap footer-row">
+        <span>loki — built with Odin</span>
+        <a href="https://github.com/a-man-called-q/loki">github.com/a-man-called-q/loki</a>
+      </div>
+    </footer>
+
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var toggle = document.getElementById("theme-toggle");
+        var stored = localStorage.getItem("loki-theme");
+        if (stored) root.setAttribute("data-theme", stored);
+
+        toggle.addEventListener("click", function () {
+          var current = root.getAttribute("data-theme");
+          var next;
+          if (!current) {
+            var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            next = prefersDark ? "light" : "dark";
+          } else {
+            next = current === "dark" ? "light" : "dark";
+          }
+          root.setAttribute("data-theme", next);
+          localStorage.setItem("loki-theme", next);
+        });
+      })();
+    </script>
+  </body>
+</html>

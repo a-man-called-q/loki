@@ -6,15 +6,18 @@ import "core:os"
 USAGE :: `loki — Odin monorepo tool
 
 Usage:
-  loki new <name>            Scaffold a new monorepo project
-  loki new app <name>        Scaffold a new app in the current project
-  loki new pkg <name>        Scaffold a new local package in the current project
-  loki add <git-url> [name]  Add a third-party package as a git submodule
-  loki sync                  Init/update all vendor submodules
-  loki run <app> [-- args]   Run an app
-  loki build [app]           Build an app, or every app if omitted
-  loki test [target]         Test a package, or every local package if omitted
-  loki doctor                Check that the environment is set up correctly
+  loki new <name> [--target=id,...]      Scaffold a new monorepo project
+  loki new app <name> [--target=id,...]  Scaffold a new app in the current project
+  loki new pkg <name>                    Scaffold a new local package in the current project
+  loki add <git-url> [name]              Add a third-party package as a git submodule
+  loki sync                              Init/update all vendor submodules
+  loki run <app> [-- args]               Run an app
+  loki build [app]                       Build an app, or every app if omitted
+  loki test [target]                     Test a package, or every local package if omitted
+  loki doctor                            Check that the environment is set up correctly
+
+  --target=id,...  Cross-compile targets for a new app (see README); omit
+                    to pick interactively, or press enter for host-only.
 `
 
 main :: proc() {

@@ -3,6 +3,7 @@ package main
 import "core:fmt"
 import "core:os"
 import "core:path/filepath"
+import "core:strings"
 import "local:cli/prompt"
 
 // cmd_new handles `loki new <name>`, `loki new app <name>` and
@@ -19,7 +20,12 @@ cmd_new :: proc(args: []string) -> int {
 
 @(private)
 cmd_new_project :: proc(args: []string) -> int {
-	name := args[0] if len(args) > 0 else prompt.input("project name")
+	positional, target_ids, has_target_flag, parse_ok := parse_target_flag(args)
+	if !parse_ok {
+		return 1
+	}
+
+	name := positional[0] if len(positional) > 0 else prompt.input("project name")
 	if name == "" {
 		fmt.eprintln("error: project name required (usage: loki new <name>)")
 		return 1
@@ -64,10 +70,18 @@ cmd_new_project :: proc(args: []string) -> int {
 		return 1
 	}
 
+	if !has_target_flag {
+		target_ids = prompt_platform_targets()
+	}
+
 	m := Manifest{
 		name             = name,
 		description      = description,
 		odin_min_version = ODIN_VERSION,
+	}
+	if len(target_ids) > 0 {
+		m.apps = make(map[string]App_Config, context.temp_allocator)
+		m.apps[app_name] = App_Config{targets = target_ids}
 	}
 	if !save_manifest(name, m) {
 		fmt.eprintfln("error: couldn't write loki.json in %s", name)
@@ -80,6 +94,9 @@ cmd_new_project :: proc(args: []string) -> int {
 
 	fmt.println()
 	fmt.printfln("created %s", name)
+	if len(target_ids) > 0 {
+		fmt.printfln("  targets: %s", strings.join(target_ids, ", "))
+	}
 	fmt.println("next steps:")
 	fmt.printfln("  cd %s", name)
 	fmt.printfln("  loki run %s", app_name)
@@ -93,7 +110,12 @@ cmd_new_app :: proc(args: []string) -> int {
 		return 1
 	}
 
-	name := args[0] if len(args) > 0 else prompt.input("app name")
+	positional, target_ids, has_target_flag, parse_ok := parse_target_flag(args)
+	if !parse_ok {
+		return 1
+	}
+
+	name := positional[0] if len(positional) > 0 else prompt.input("app name")
 	if !valid_name(name) {
 		fmt.eprintfln("error: invalid app name %q (use letters, digits, underscore; must start with a letter)", name)
 		return 1
@@ -116,7 +138,17 @@ cmd_new_app :: proc(args: []string) -> int {
 		return 1
 	}
 
+	if !has_target_flag {
+		target_ids = prompt_platform_targets()
+	}
+	if len(target_ids) > 0 && !save_app_targets(root, name, target_ids) {
+		fmt.eprintln("warning: app created but couldn't record targets in loki.json")
+	}
+
 	fmt.printfln("created apps/%s", name)
+	if len(target_ids) > 0 {
+		fmt.printfln("  targets: %s", strings.join(target_ids, ", "))
+	}
 	fmt.printfln("  loki run %s", name)
 	return 0
 }
@@ -177,4 +209,75 @@ valid_name :: proc(name: string) -> bool {
 		}
 	}
 	return true
+}
+
+// parse_target_flag pulls a `--target=id1,id2` flag out of args, checking
+// every id against PLATFORMS. has_target_flag distinguishes "no --target
+// given" from "--target= given with nothing after it" — the former falls
+// back to the interactive picker, the latter means "host only" explicitly.
+@(private)
+parse_target_flag :: proc(args: []string) -> (positional: []string, target_ids: []string, has_target_flag: bool, ok: bool) {
+	pos := make([dynamic]string, context.temp_allocator)
+	ids := make([dynamic]string, context.temp_allocator)
+
+	for a in args {
+		if !strings.has_prefix(a, "--target=") {
+			append(&pos, a)
+			continue
+		}
+		has_target_flag = true
+		raw := strings.trim_prefix(a, "--target=")
+		for part in strings.split_iterator(&raw, ",") {
+			id := strings.trim_space(part)
+			if id == "" {
+				continue
+			}
+			if _, found := find_platform(id); !found {
+				fmt.eprintfln("error: unknown target %q — see README for supported ids", id)
+				return nil, nil, true, false
+			}
+			append(&ids, id)
+		}
+	}
+	return pos[:], ids[:], has_target_flag, true
+}
+
+// prompt_platform_targets offers the interactive cross-compile picker. In
+// non-interactive contexts (no TTY) it returns nil, matching loki's
+// original host-only build behaviour.
+@(private)
+prompt_platform_targets :: proc() -> []string {
+	labels := make([]string, len(PLATFORMS), context.temp_allocator)
+	for p, i in PLATFORMS {
+		labels[i] = p.label
+	}
+
+	question := "cross-compile targets (space to toggle, enter for host-only)"
+	indices, ok := prompt.multiselect(question, labels)
+	if !ok || len(indices) == 0 {
+		return nil
+	}
+
+	ids := make([]string, len(indices))
+	for idx, i in indices {
+		ids[i] = PLATFORMS[idx].id
+	}
+	return ids
+}
+
+// save_app_targets records target_ids under apps[app_name].targets in
+// project_root's loki.json, preserving any other config already there.
+@(private)
+save_app_targets :: proc(project_root: string, app_name: string, target_ids: []string) -> bool {
+	m, ok := load_manifest(project_root, context.temp_allocator)
+	if !ok {
+		return false
+	}
+	if m.apps == nil {
+		m.apps = make(map[string]App_Config, context.temp_allocator)
+	}
+	cfg := m.apps[app_name]
+	cfg.targets = target_ids
+	m.apps[app_name] = cfg
+	return save_manifest(project_root, m)
 }

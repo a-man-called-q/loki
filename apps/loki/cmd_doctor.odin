@@ -34,6 +34,10 @@ cmd_doctor :: proc(args: []string) -> int {
 		ok = false
 	}
 
+	if !check_cross_targets(root) {
+		ok = false
+	}
+
 	return exit_code_for(ok)
 }
 
@@ -88,4 +92,66 @@ check_vendor_status :: proc(root: string) -> bool {
 		}
 	}
 	return all_ok
+}
+
+// check_cross_targets reports whether the toolchain looks ready for any
+// non-host targets declared under apps[*].targets in loki.json. Odin can
+// typecheck any target on any host, but linking iOS/Android output still
+// depends on platform SDKs that live outside the Odin toolchain itself.
+@(private)
+check_cross_targets :: proc(root: string) -> bool {
+	m, ok := load_manifest(root, context.temp_allocator)
+	if !ok {
+		return true
+	}
+
+	all_ok := true
+	any_targets := false
+	for app_name, cfg in m.apps {
+		for id in cfg.targets {
+			any_targets = true
+			platform, found := find_platform(id)
+			if !found {
+				fmt.printfln("[warn] app %s: unknown target %q in loki.json", app_name, id)
+				all_ok = false
+				continue
+			}
+			if !check_platform_toolchain(app_name, platform) {
+				all_ok = false
+			}
+		}
+	}
+	if !any_targets {
+		return true
+	}
+	return all_ok
+}
+
+// check_platform_toolchain prints one [ok]/[warn] line for building
+// app_name against platform, and reports whether it looks ready.
+@(private)
+check_platform_toolchain :: proc(app_name: string, platform: Platform) -> bool {
+	switch platform.subtarget {
+	case "iphone", "iphonesimulator":
+		if ODIN_OS != .Darwin {
+			fmt.printfln("[warn] %s (%s): iOS builds need Xcode's toolchain, which only runs on macOS", app_name, platform.label)
+			return false
+		}
+		if _, found := find_in_path("xcrun"); !found {
+			fmt.printfln("[warn] %s (%s): `xcrun` not found — install the Xcode command line tools", app_name, platform.label)
+			return false
+		}
+		fmt.printfln("[ok]   %s (%s): Xcode command line tools found", app_name, platform.label)
+		return true
+	case "android":
+		if os.get_env("ANDROID_NDK_HOME", context.temp_allocator) == "" && os.get_env("ANDROID_NDK_ROOT", context.temp_allocator) == "" {
+			fmt.printfln("[warn] %s (%s): set ANDROID_NDK_HOME (or ANDROID_NDK_ROOT) to link against the Android NDK", app_name, platform.label)
+			return false
+		}
+		fmt.printfln("[ok]   %s (%s): Android NDK environment variable set", app_name, platform.label)
+		return true
+	case:
+		fmt.printfln("[ok]   %s (%s): cross-compiles with the Odin toolchain, no extra SDK needed", app_name, platform.label)
+		return true
+	}
 }

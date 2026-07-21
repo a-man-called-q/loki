@@ -1,0 +1,43 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("changelog");
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<Base title={`${entry.data.title} — loki changelog`} description={entry.data.description} activeNav="changelog">
+  <section>
+    <div class="wrap">
+      <a href={`${base}/changelog`} class="back-link">&larr; changelog</a>
+      <p class="eyebrow">
+        {entry.data.date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+        {entry.data.version && ` · ${entry.data.version}`}
+      </p>
+      <h1 class="page-title">{entry.data.title}</h1>
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .back-link {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+  .back-link:hover { color: var(--frost); }
+</style>
