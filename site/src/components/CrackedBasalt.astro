@@ -1,0 +1,75 @@
+---
+import { generateCracks } from "../lib/cracks";
+
+interface Props {
+  seed?: string;
+  width?: number;
+  height?: number;
+}
+const { seed = "loki-hearth", width = 1400, height = 900 } = Astro.props;
+const net = generateCracks(seed, width, height);
+---
+
+<svg
+  class="cracked-basalt"
+  viewBox={`0 0 ${net.width} ${net.height}`}
+  preserveAspectRatio="xMidYMax slice"
+  aria-hidden="true"
+>
+  <defs>
+    <filter id="ember-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <radialGradient id="hearth-glow" cx="50%" cy="100%" r="75%">
+      <stop offset="0%" stop-color="var(--ember-deep)" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="var(--ember-deep)" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width={net.width} height={net.height} fill="url(#hearth-glow)" />
+  <g filter="url(#ember-glow)">
+    {net.paths.map((p) => (
+      <path
+        d={p.d}
+        class="crack-path"
+        style={`--depth:${p.depth};--delay:${p.delay.toFixed(2)}s;stroke-width:${Math.max(0.6, 3.2 * Math.pow(0.8, p.depth)).toFixed(2)}`}
+      />
+    ))}
+  </g>
+</svg>
+
+<style>
+  .cracked-basalt {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .crack-path {
+    fill: none;
+    stroke: var(--ember);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: calc(0.75 - var(--depth) * 0.07);
+    animation: crack-pulse 5s ease-in-out var(--delay) infinite alternate;
+  }
+  @keyframes crack-pulse {
+    from {
+      opacity: calc(0.5 - var(--depth) * 0.05);
+    }
+    to {
+      opacity: calc(0.95 - var(--depth) * 0.08);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .crack-path {
+      animation: none;
+      opacity: calc(0.7 - var(--depth) * 0.06);
+    }
+  }
+</style>

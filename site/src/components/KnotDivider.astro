@@ -1,0 +1,44 @@
+---
+import { generateKnotBand } from "../lib/knot";
+
+interface Props {
+  seed?: string;
+  width?: number;
+}
+const { seed = "loki-knot", width = 880 } = Astro.props;
+const height = 28;
+const band = generateKnotBand(seed, width, height);
+---
+
+<div class="knot-divider" aria-hidden="true">
+  <svg viewBox={`0 0 ${band.width} ${band.height}`} preserveAspectRatio="none" role="presentation">
+    <g class="knot-stone" fill="none" stroke="var(--crack)" stroke-width="2" stroke-linecap="round">
+      {band.strandStone.map((d) => (
+        <path d={d} />
+      ))}
+    </g>
+    <g class="knot-ember" fill="none" stroke="var(--ember)" stroke-width="2" stroke-linecap="round">
+      {band.strandEmber.map((d) => (
+        <path d={d} />
+      ))}
+    </g>
+  </svg>
+</div>
+
+<style>
+  .knot-divider {
+    width: 100%;
+  }
+  .knot-divider svg {
+    display: block;
+    width: 100%;
+    height: 28px;
+  }
+  .knot-ember {
+    filter: drop-shadow(0 0 3px color-mix(in srgb, var(--ember) 65%, transparent));
+    opacity: 0.9;
+  }
+  .knot-stone {
+    opacity: 0.75;
+  }
+</style>

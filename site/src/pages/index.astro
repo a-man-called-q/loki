@@ -1,5 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
+import CrackedBasalt from "../components/CrackedBasalt.astro";
+import KnotDivider from "../components/KnotDivider.astro";
 ---
 
 <Base
@@ -8,59 +10,66 @@ import Base from "../layouts/Base.astro";
   activeNav="home"
 >
   <section class="hero">
-    <div class="wrap">
-      <p class="eyebrow">a cli for odin monorepos</p>
-      <h1 class="hero-title">One repo,<br /><span class="accent">every</span> app in it.</h1>
+    <CrackedBasalt seed="loki-hearth-hero" />
+    <div class="wrap hero-content">
+      <p class="eyebrow">an odin monorepo tool</p>
+      <h1 class="hero-title">One repo.<br /><span class="accent">However many</span> faces it wears.</h1>
       <p class="hero-sub">
         loki scaffolds apps, wires up shared packages, and pins third-party
-        code as git submodules — so an Odin monorepo stays one <code class="mono">odin build</code>
-        away from working, no matter how many pieces it has.
+        code as git submodules — one <code class="mono">odin build</code>,
+        no matter how the repo shapeshifts underneath it.
       </p>
       <div class="hero-cta">
         <a class="btn btn-primary" href="#install">Install loki</a>
         <a class="btn btn-ghost" href="https://github.com/a-man-called-q/loki">View source</a>
       </div>
 
-      <div class="terminal">
+      <div class="terminal glow-hover">
         <div class="terminal-bar"><span>~/hearth</span><span>zsh</span></div>
         <div class="terminal-body" id="tty" aria-hidden="true"></div>
       </div>
     </div>
   </section>
 
-  <div class="wrap"><div class="divider"></div></div>
+  <div class="wrap"><KnotDivider seed="divider-1" /></div>
 
   <section id="why">
     <div class="wrap">
-      <h2 class="section-title">Three directories, one tool</h2>
+      <h2 class="section-title">Three directories. It only looks simple.</h2>
       <p class="section-lede">
-        loki doesn't invent a new project shape — it just knows the one Odin
-        monorepos already tend to have, and automates the parts that get
-        tedious by hand.
+        loki doesn't invent a new shape for your project — it just knows the
+        one every Odin monorepo eventually grows into, whether you meant it
+        to or not, and automates the parts that get tedious by hand.
       </p>
       <div class="why-grid">
-        <div class="why-card">
-          <span class="path">apps/</span>
-          <p>Every binary in the repo, scaffolded the same way. <code class="mono">loki build</code> compiles one app or all of them, each to its own <code class="mono">bin/</code> output.</p>
+        <div class="why-card glow-hover">
+          <div>
+            <span class="path">apps/</span>
+            <p>Every binary in the repo, scaffolded the same way, built the same way. <code class="mono">loki build</code> compiles one or all of them — it doesn't play favorites.</p>
+          </div>
         </div>
-        <div class="why-card">
-          <span class="path">packages/local/</span>
-          <p>First-party code shared across apps. loki discovers leaf packages by walking the tree — no manifest entry to keep in sync by hand.</p>
+        <div class="why-card glow-hover">
+          <div>
+            <span class="path">packages/local/</span>
+            <p>First-party code shared across apps, discovered by walking the tree. No manifest entry to keep in sync, because there's nothing left to forget.</p>
+          </div>
         </div>
-        <div class="why-card">
-          <span class="path">packages/vendor/</span>
-          <p>Third-party dependencies, pinned as git submodules. <code class="mono">loki doctor</code> catches uninitialized or drifted vendor code before it breaks a build.</p>
+        <div class="why-card glow-hover">
+          <div>
+            <span class="path">packages/vendor/</span>
+            <p>Third-party dependencies, pinned as git submodules. <code class="mono">loki doctor</code> sniffs out anything uninitialized, drifted, or quietly edited by hand.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="wrap"><div class="divider"></div></div>
+  <div class="wrap"><KnotDivider seed="divider-2" /></div>
 
   <section id="commands">
     <div class="wrap">
       <h2 class="section-title">Commands</h2>
-      <p class="section-lede">The full surface area. Run <code class="mono">loki help</code> any time for this from the terminal.</p>
+      <p class="section-lede">The full surface area — no flags hidden up a sleeve. Run <code class="mono">loki help</code> any time for this from the terminal.</p>
       <div class="cmd-list">
         <div class="cmd-row"><code class="mono">loki new &lt;name&gt; [--target=id,...]</code><span>Scaffold a new monorepo project</span></div>
         <div class="cmd-row"><code class="mono">loki new app &lt;name&gt; [--target=id,...]</code><span>Scaffold a new app in the current project</span></div>
@@ -75,13 +84,13 @@ import Base from "../layouts/Base.astro";
     </div>
   </section>
 
-  <div class="wrap"><div class="divider"></div></div>
+  <div class="wrap"><KnotDivider seed="divider-3" /></div>
 
   <section id="install">
     <div class="wrap">
       <h2 class="section-title">Install</h2>
-      <p class="section-lede">Needs the <a href="https://odin-lang.org/docs/install/">Odin compiler</a> (dev-2026-07 or newer) on your <code class="mono">PATH</code>. Build loki from source:</p>
-      <div class="install-box">
+      <p class="section-lede">Needs the <a href="https://odin-lang.org/docs/install/">Odin compiler</a> (dev-2026-07 or newer) on your <code class="mono">PATH</code>. Build loki from source, the same way it builds everything else:</p>
+      <div class="install-box glow-hover">
         <button class="copy-btn" id="copy-install" type="button">copy</button>
         <pre><span class="p">$</span> <span class="c">git clone https://github.com/a-man-called-q/loki.git</span>
 <span class="p">$</span> <span class="c">cd loki</span>
@@ -93,7 +102,12 @@ import Base from "../layouts/Base.astro";
 </Base>
 
 <style>
-  .hero { padding-block: clamp(3rem, 8vw, 6rem) clamp(2.5rem, 6vw, 4rem); }
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(3rem, 8vw, 6rem) clamp(2.5rem, 6vw, 4rem);
+  }
+  .hero-content { position: relative; z-index: 1; }
 
   h1.hero-title {
     font-family: var(--mono);
@@ -108,7 +122,7 @@ import Base from "../layouts/Base.astro";
 
   .hero-sub {
     font-size: clamp(1.05rem, 2vw, 1.2rem);
-    color: var(--ink-dim);
+    color: var(--ash-dim);
     max-width: 46ch;
     margin: 0 0 2.25rem;
   }
@@ -117,8 +131,9 @@ import Base from "../layouts/Base.astro";
 
   /* ---------- terminal ---------- */
   .terminal {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--stone) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--crack);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     overflow: hidden;
@@ -128,10 +143,10 @@ import Base from "../layouts/Base.astro";
     align-items: center;
     justify-content: space-between;
     padding: 0.55rem 1rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--crack);
     font-family: var(--mono);
     font-size: 0.75rem;
-    color: var(--muted);
+    color: var(--smoke);
   }
   .terminal-body {
     padding: 1.25rem 1.4rem 1.5rem;
@@ -141,12 +156,12 @@ import Base from "../layouts/Base.astro";
   }
   .terminal-body :global(.line) { white-space: pre; }
   .terminal-body :global(.prompt) { color: var(--ember); }
-  .terminal-body :global(.out) { color: var(--ink-dim); }
+  .terminal-body :global(.out) { color: var(--ash-dim); }
   :global(.caret) {
     display: inline-block;
     width: 0.55em;
     height: 1em;
-    background: var(--frost);
+    background: var(--glint);
     vertical-align: text-bottom;
     margin-left: 2px;
     animation: blink 1s step-end infinite;
@@ -162,71 +177,76 @@ import Base from "../layouts/Base.astro";
   }
   @media (max-width: 760px) { .why-grid { grid-template-columns: 1fr; } }
   .why-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--stone);
+    border: 1px solid var(--crack);
     border-radius: var(--radius);
     padding: 1.4rem 1.3rem;
+    overflow: hidden;
   }
   .why-card .path {
     display: inline-block;
     font-family: var(--mono);
     font-size: 0.8rem;
-    color: var(--frost);
-    background: color-mix(in srgb, var(--frost) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--frost) 30%, transparent);
+    color: var(--glint);
+    background: color-mix(in srgb, var(--glint) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--glint) 30%, transparent);
     border-radius: 5px;
     padding: 0.15rem 0.5rem;
     margin-bottom: 0.8rem;
   }
-  .why-card p { margin: 0; color: var(--ink-dim); font-size: 0.94rem; }
+  .why-card p { margin: 0; color: var(--ash-dim); font-size: 0.94rem; }
 
   /* ---------- commands ---------- */
-  .cmd-list { border-top: 1px solid var(--border); }
+  .cmd-list { border-top: 1px solid var(--crack); }
   .cmd-row {
     display: grid;
     grid-template-columns: minmax(220px, 320px) 1fr;
     gap: 1.5rem;
     padding: 0.85rem 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--crack);
     align-items: baseline;
   }
   @media (max-width: 640px) { .cmd-row { grid-template-columns: 1fr; gap: 0.25rem; } }
-  .cmd-row code { color: var(--ember-strong); font-size: 0.88rem; }
-  .cmd-row span { color: var(--ink-dim); font-size: 0.92rem; }
+  .cmd-row code { color: var(--ember-bright); font-size: 0.88rem; }
+  .cmd-row span { color: var(--ash-dim); font-size: 0.92rem; }
 
   /* ---------- install ---------- */
   .install-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--stone);
+    border: 1px solid var(--crack);
     border-radius: var(--radius);
     position: relative;
+    overflow: hidden;
   }
   .install-box pre {
     margin: 0;
-    padding: 1.3rem 3.2rem 1.3rem 1.4rem;
+    padding: 1.3rem 4.2rem 1.3rem 1.4rem;
     font-family: var(--mono);
     font-size: 0.88rem;
     line-height: 1.8;
     overflow-x: auto;
-    color: var(--ink-dim);
+    color: var(--ash-dim);
   }
   .install-box pre :global(.p) { color: var(--ember); }
-  .install-box pre :global(.c) { color: var(--ink); }
+  .install-box pre :global(.c) { color: var(--ash); }
   .copy-btn {
     position: absolute;
-    top: 0.8rem;
-    right: 0.8rem;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    color: var(--muted);
+    top: 0.65rem;
+    right: 0.65rem;
+    min-width: 44px;
+    min-height: 44px;
+    background: var(--stone-2);
+    border: 1px solid var(--crack);
+    color: var(--smoke);
     font-family: var(--mono);
-    font-size: 0.72rem;
-    padding: 0.3rem 0.55rem;
-    border-radius: 5px;
+    font-size: 0.76rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
     cursor: pointer;
+    z-index: 1;
   }
-  .copy-btn:hover { color: var(--frost); border-color: var(--frost-dim); }
-  .install-note { margin: 1rem 0 0; font-size: 0.88rem; color: var(--muted); }
+  .copy-btn:hover { color: var(--ember-bright); border-color: var(--ember); }
+  .install-note { margin: 1rem 0 0; font-size: 0.88rem; color: var(--smoke); }
 </style>
 
 <script>

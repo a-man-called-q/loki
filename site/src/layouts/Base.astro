@@ -24,7 +24,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <body>
     <header class="topbar">
       <div class="wrap topbar-row">
-        <a href={`${base}/`} class="wordmark" style="color: inherit;">loki<span>_</span></a>
+        <a href={`${base}/`} class="wordmark" style="color: inherit;">
+          <svg class="sigil" viewBox="0 0 32 32" aria-hidden="true">
+            <g transform="translate(16,16)">
+              <path d="M0,0 C-4,-1 -6,-5 -5,-9 C-4,-11 -1,-12 0,-10 C1,-12 4,-11 5,-9 C6,-5 4,-1 0,0 Z" fill="var(--ember)" />
+              <path d="M0,0 C-4,-1 -6,-5 -5,-9 C-4,-11 -1,-12 0,-10 C1,-12 4,-11 5,-9 C6,-5 4,-1 0,0 Z" fill="var(--ember)" opacity="0.85" transform="rotate(120)" />
+              <path d="M0,0 C-4,-1 -6,-5 -5,-9 C-4,-11 -1,-12 0,-10 C1,-12 4,-11 5,-9 C6,-5 4,-1 0,0 Z" fill="var(--ember)" opacity="0.85" transform="rotate(240)" />
+              <circle r="1.6" fill="var(--glint)" />
+            </g>
+          </svg>
+          loki
+        </a>
         <nav class="topbar-links">
           <a href={`${base}/`} class={activeNav === "home" ? "current" : ""}>home</a>
           <a href={`${base}/changelog`} class={activeNav === "changelog" ? "current" : ""}>changelog</a>
@@ -40,7 +50,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
     <footer>
       <div class="wrap footer-row">
-        <span>loki — built with Odin</span>
+        <span>loki — forged, not found</span>
         <a href="https://github.com/a-man-called-q/loki">github.com/a-man-called-q/loki</a>
       </div>
     </footer>
@@ -63,6 +73,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
           }
           root.setAttribute("data-theme", next);
           localStorage.setItem("loki-theme", next);
+        });
+      })();
+
+      (function () {
+        var glowEls = document.querySelectorAll(".glow-hover");
+        glowEls.forEach(function (el) {
+          el.addEventListener("pointermove", function (e) {
+            var rect = el.getBoundingClientRect();
+            el.style.setProperty("--mx", (e.clientX - rect.left) + "px");
+            el.style.setProperty("--my", (e.clientY - rect.top) + "px");
+          });
         });
       })();
     </script>
