@@ -1,16 +1,17 @@
 /* ---------- tokens: molten obsidian ---------- */
 :root {
-  --void: #0d0a09;
-  --stone: #1a1512;
-  --stone-2: #241d19;
-  --crack: #3a2f28;
-  --ash: #ede6dc;
-  --ash-dim: #b7ab9e;
-  --smoke: #8f8378;
-  --ember: #ff5a1f;
-  --ember-bright: #ffb347;
-  --ember-deep: #8a2a0f;
-  --glint: #8fd8ff;
+  --void: #0a0d0b;
+  --stone: #141a15;
+  --stone-2: #1c241d;
+  --crack: #334035;
+  --ash: #e6ece7;
+  --ash-dim: #aebab0;
+  --smoke: #82938a;
+  --ember: #39d97a;
+  --ember-bright: #8ff5b8;
+  --ember-deep: #0f5c34;
+  --glint: #ffcf5c;
+  --on-ember: #08130c;
   --shadow: 0 24px 70px -28px rgba(0, 0, 0, 0.7);
   --radius: 10px;
   --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", "Fira Code", Menlo, Consolas, "Liberation Mono", monospace;
@@ -19,48 +20,51 @@
 
 @media (prefers-color-scheme: light) {
   :root {
-    --void: #ede7db;
-    --stone: #fff9ef;
-    --stone-2: #f5eddc;
-    --crack: #ddd0ba;
-    --ash: #221a14;
-    --ash-dim: #57493d;
-    --smoke: #6e5f50;
-    --ember: #b93c0f;
-    --ember-bright: #8a3a12;
-    --ember-deep: #7a2e0c;
-    --glint: #1c7087;
+    --void: #eaeee9;
+    --stone: #f8faf6;
+    --stone-2: #eef1ea;
+    --crack: #d3dcd2;
+    --ash: #141a15;
+    --ash-dim: #48524b;
+    --smoke: #5f6b63;
+    --ember: #147942;
+    --ember-bright: #0e6b3a;
+    --ember-deep: #0a4d2b;
+    --glint: #8a5a00;
+    --on-ember: #f3fbf6;
     --shadow: 0 20px 50px -30px rgba(40, 30, 10, 0.35);
   }
 }
 
 :root[data-theme="dark"] {
-  --void: #0d0a09;
-  --stone: #1a1512;
-  --stone-2: #241d19;
-  --crack: #3a2f28;
-  --ash: #ede6dc;
-  --ash-dim: #b7ab9e;
-  --smoke: #8f8378;
-  --ember: #ff5a1f;
-  --ember-bright: #ffb347;
-  --ember-deep: #8a2a0f;
-  --glint: #8fd8ff;
+  --void: #0a0d0b;
+  --stone: #141a15;
+  --stone-2: #1c241d;
+  --crack: #334035;
+  --ash: #e6ece7;
+  --ash-dim: #aebab0;
+  --smoke: #82938a;
+  --ember: #39d97a;
+  --ember-bright: #8ff5b8;
+  --ember-deep: #0f5c34;
+  --glint: #ffcf5c;
+  --on-ember: #08130c;
   --shadow: 0 24px 70px -28px rgba(0, 0, 0, 0.7);
 }
 
 :root[data-theme="light"] {
-  --void: #ede7db;
-  --stone: #fff9ef;
-  --stone-2: #f5eddc;
-  --crack: #ddd0ba;
-  --ash: #221a14;
-  --ash-dim: #57493d;
-  --smoke: #6e5f50;
-  --ember: #b93c0f;
-  --ember-bright: #8a3a12;
-  --ember-deep: #7a2e0c;
-  --glint: #1c7087;
+  --void: #eaeee9;
+  --stone: #f8faf6;
+  --stone-2: #eef1ea;
+  --crack: #d3dcd2;
+  --ash: #141a15;
+  --ash-dim: #48524b;
+  --smoke: #5f6b63;
+  --ember: #147942;
+  --ember-bright: #0e6b3a;
+  --ember-deep: #0a4d2b;
+  --glint: #8a5a00;
+  --on-ember: #f3fbf6;
   --shadow: 0 20px 50px -30px rgba(40, 30, 10, 0.35);
 }
 
@@ -136,6 +140,13 @@ header.topbar {
   letter-spacing: 0.01em;
 }
 .wordmark .sigil { width: 20px; height: 20px; flex: none; }
+.wordmark .runes {
+  font-family: "Noto Sans Runic", var(--mono);
+  font-weight: 400;
+  font-size: 1.3rem;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
 .topbar-links {
   display: flex;
   align-items: center;
@@ -216,7 +227,7 @@ h2.section-title {
   gap: 0.5rem;
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
 }
-.btn-primary { background: var(--ember); color: #1a0700; box-shadow: 0 0 0 0 color-mix(in srgb, var(--ember) 50%, transparent); }
+.btn-primary { background: var(--ember); color: var(--on-ember); box-shadow: 0 0 0 0 color-mix(in srgb, var(--ember) 50%, transparent); }
 .btn-primary:hover { background: var(--ember-bright); text-decoration: none; transform: translateY(-1px); }
 .btn-ghost { background: transparent; border-color: var(--crack); color: var(--ash); }
 .btn-ghost:hover { border-color: var(--ember); color: var(--ember-bright); text-decoration: none; }

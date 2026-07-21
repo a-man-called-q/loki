@@ -13,11 +13,11 @@ import KnotDivider from "../components/KnotDivider.astro";
     <CrackedBasalt seed="loki-hearth-hero" />
     <div class="wrap hero-content">
       <p class="eyebrow">an odin monorepo tool</p>
-      <h1 class="hero-title">One repo.<br /><span class="accent">However many</span> faces it wears.</h1>
+      <h1 class="hero-title">One repo,<br /><span class="accent">every</span> app in it.</h1>
       <p class="hero-sub">
         loki scaffolds apps, wires up shared packages, and pins third-party
-        code as git submodules — one <code class="mono">odin build</code>,
-        no matter how the repo shapeshifts underneath it.
+        code as git submodules — so an Odin monorepo stays one <code class="mono">odin build</code>
+        away from working, no matter how many pieces it has.
       </p>
       <div class="hero-cta">
         <a class="btn btn-primary" href="#install">Install loki</a>
@@ -35,29 +35,43 @@ import KnotDivider from "../components/KnotDivider.astro";
 
   <section id="why">
     <div class="wrap">
-      <h2 class="section-title">Three directories. It only looks simple.</h2>
+      <h2 class="section-title">Three directories, one tool</h2>
       <p class="section-lede">
-        loki doesn't invent a new shape for your project — it just knows the
-        one every Odin monorepo eventually grows into, whether you meant it
-        to or not, and automates the parts that get tedious by hand.
+        loki doesn't invent a new project shape — it works with the one
+        every Odin monorepo already has, and automates the parts that get
+        tedious by hand.
       </p>
+
+      <div class="tree-box glow-hover">
+        <pre>hearth/
+├── loki.json
+├── <span class="hl">apps/</span>
+│   └── cli/
+├── packages/
+│   ├── <span class="hl">local/</span>
+│   │   └── utils/
+│   └── <span class="hl">vendor/</span>
+│       └── some-lib/
+└── bin/</pre>
+      </div>
+
       <div class="why-grid">
         <div class="why-card glow-hover">
           <div>
             <span class="path">apps/</span>
-            <p>Every binary in the repo, scaffolded the same way, built the same way. <code class="mono">loki build</code> compiles one or all of them — it doesn't play favorites.</p>
+            <p>Every binary in the repo, scaffolded the same way. <code class="mono">loki build</code> compiles one app or all of them, each to its own <code class="mono">bin/</code> output.</p>
           </div>
         </div>
         <div class="why-card glow-hover">
           <div>
             <span class="path">packages/local/</span>
-            <p>First-party code shared across apps, discovered by walking the tree. No manifest entry to keep in sync, because there's nothing left to forget.</p>
+            <p>First-party code shared across apps. loki discovers leaf packages by walking the tree — no manifest entry to keep in sync by hand.</p>
           </div>
         </div>
         <div class="why-card glow-hover">
           <div>
             <span class="path">packages/vendor/</span>
-            <p>Third-party dependencies, pinned as git submodules. <code class="mono">loki doctor</code> sniffs out anything uninitialized, drifted, or quietly edited by hand.</p>
+            <p>Third-party dependencies, pinned as git submodules. <code class="mono">loki doctor</code> catches uninitialized or drifted vendor code before it breaks a build.</p>
           </div>
         </div>
       </div>
@@ -69,7 +83,7 @@ import KnotDivider from "../components/KnotDivider.astro";
   <section id="commands">
     <div class="wrap">
       <h2 class="section-title">Commands</h2>
-      <p class="section-lede">The full surface area — no flags hidden up a sleeve. Run <code class="mono">loki help</code> any time for this from the terminal.</p>
+      <p class="section-lede">The full surface area. Run <code class="mono">loki help</code> any time for this from the terminal.</p>
       <div class="cmd-list">
         <div class="cmd-row"><code class="mono">loki new &lt;name&gt; [--target=id,...]</code><span>Scaffold a new monorepo project</span></div>
         <div class="cmd-row"><code class="mono">loki new app &lt;name&gt; [--target=id,...]</code><span>Scaffold a new app in the current project</span></div>
@@ -89,7 +103,7 @@ import KnotDivider from "../components/KnotDivider.astro";
   <section id="install">
     <div class="wrap">
       <h2 class="section-title">Install</h2>
-      <p class="section-lede">Needs the <a href="https://odin-lang.org/docs/install/">Odin compiler</a> (dev-2026-07 or newer) on your <code class="mono">PATH</code>. Build loki from source, the same way it builds everything else:</p>
+      <p class="section-lede">Needs the <a href="https://odin-lang.org/docs/install/">Odin compiler</a> (dev-2026-07 or newer) on your <code class="mono">PATH</code>. Build loki from source:</p>
       <div class="install-box glow-hover">
         <button class="copy-btn" id="copy-install" type="button">copy</button>
         <pre><span class="p">$</span> <span class="c">git clone https://github.com/a-man-called-q/loki.git</span>
@@ -168,6 +182,25 @@ import KnotDivider from "../components/KnotDivider.astro";
   }
   @media (prefers-reduced-motion: reduce) { :global(.caret) { animation: none; } }
   @keyframes blink { 50% { opacity: 0; } }
+
+  /* ---------- tree example ---------- */
+  .tree-box {
+    background: var(--stone);
+    border: 1px solid var(--crack);
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .tree-box pre {
+    margin: 0;
+    padding: 1.2rem 1.4rem;
+    font-family: var(--mono);
+    font-size: 0.86rem;
+    line-height: 1.7;
+    color: var(--ash-dim);
+    overflow-x: auto;
+  }
+  .tree-box pre :global(.hl) { color: var(--glint); font-weight: 600; }
 
   /* ---------- why grid ---------- */
   .why-grid {
