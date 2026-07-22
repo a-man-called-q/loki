@@ -1,0 +1,7 @@
+{
+	"$schema": "https://raw.githubusercontent.com/DanielGavin/ols/master/misc/ols.schema.json",
+	"collections": [
+		{ "name": "local", "path": "packages/local" },
+		{ "name": "deps", "path": "packages/vendor" }
+	]
+}

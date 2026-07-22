@@ -24,13 +24,13 @@ cmd_add :: proc(args: []string) -> int {
 		return 1
 	}
 
-	vendor_path, _ := filepath.join({root, "packages", "vendor", name}, context.temp_allocator)
+	vendor_path, _ := filepath.join({root, COLLECTION_VENDOR_DIR, name}, context.temp_allocator)
 	if os.exists(vendor_path) {
-		fmt.eprintfln("error: packages/vendor/%s already exists", name)
+		fmt.eprintfln("error: %s/%s already exists", COLLECTION_VENDOR_DIR, name)
 		return 1
 	}
 
-	rel_vendor_path, _ := filepath.join({"packages", "vendor", name}, context.temp_allocator)
+	rel_vendor_path, _ := filepath.join({COLLECTION_VENDOR_DIR, name}, context.temp_allocator)
 	if !run_git(root, []string{"submodule", "add", url, rel_vendor_path}) {
 		fmt.eprintln("error: `git submodule add` failed")
 		return 1
@@ -49,8 +49,8 @@ cmd_add :: proc(args: []string) -> int {
 		return 1
 	}
 
-	fmt.printfln("added %s as packages/vendor/%s", url, name)
-	fmt.printfln(`  import "deps:%s"`, name)
+	fmt.printfln("added %s as %s/%s", url, COLLECTION_VENDOR_DIR, name)
+	fmt.printfln(`  import "%s:%s"`, COLLECTION_VENDOR_NAME, name)
 	return 0
 }
 

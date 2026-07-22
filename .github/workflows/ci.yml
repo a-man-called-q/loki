@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
       - name: Checkout
@@ -34,13 +34,33 @@ jobs:
         run: odin version
 
       - name: Bootstrap build (build.sh)
+        if: runner.os != 'Windows'
         run: ./build.sh
 
+      - name: Bootstrap build (build.ps1)
+        if: runner.os == 'Windows'
+        run: ./build.ps1
+
       - name: Doctor
+        if: runner.os != 'Windows'
         run: ./bin/loki doctor
 
+      - name: Doctor (Windows)
+        if: runner.os == 'Windows'
+        run: .\bin\loki.exe doctor
+
       - name: Build all apps
+        if: runner.os != 'Windows'
         run: ./bin/loki build
 
+      - name: Build all apps (Windows)
+        if: runner.os == 'Windows'
+        run: .\bin\loki.exe build
+
       - name: Test all local packages
+        if: runner.os != 'Windows'
         run: ./bin/loki test
+
+      - name: Test all local packages (Windows)
+        if: runner.os == 'Windows'
+        run: .\bin\loki.exe test

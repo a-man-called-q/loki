@@ -47,8 +47,8 @@ cmd_new_project :: proc(args: []string) -> int {
 	}
 
 	app_dir, _ := filepath.join({name, "apps", app_name}, context.temp_allocator)
-	local_dir, _ := filepath.join({name, "packages", "local"}, context.temp_allocator)
-	vendor_dir, _ := filepath.join({name, "packages", "vendor"}, context.temp_allocator)
+	local_dir, _ := filepath.join({name, COLLECTION_LOCAL_DIR}, context.temp_allocator)
+	vendor_dir, _ := filepath.join({name, COLLECTION_VENDOR_DIR}, context.temp_allocator)
 	scaffold_dirs := []string{app_dir, local_dir, vendor_dir}
 	for d in scaffold_dirs {
 		if os.make_directory_all(d) != nil {
@@ -60,6 +60,12 @@ cmd_new_project :: proc(args: []string) -> int {
 	gitignore_path, _ := filepath.join({name, ".gitignore"}, context.temp_allocator)
 	if os.write_entire_file(gitignore_path, TEMPLATE_GITIGNORE) != nil {
 		fmt.eprintfln("error: couldn't write %s", gitignore_path)
+		return 1
+	}
+
+	ols_path, _ := filepath.join({name, "ols.json"}, context.temp_allocator)
+	if os.write_entire_file(ols_path, render_ols_json()) != nil {
+		fmt.eprintfln("error: couldn't write %s", ols_path)
 		return 1
 	}
 
@@ -166,9 +172,9 @@ cmd_new_pkg :: proc(args: []string) -> int {
 		return 1
 	}
 
-	pkg_dir, _ := filepath.join({root, "packages", "local", name}, context.temp_allocator)
+	pkg_dir, _ := filepath.join({root, COLLECTION_LOCAL_DIR, name}, context.temp_allocator)
 	if os.exists(pkg_dir) {
-		fmt.eprintfln("error: packages/local/%s already exists", name)
+		fmt.eprintfln("error: %s/%s already exists", COLLECTION_LOCAL_DIR, name)
 		return 1
 	}
 	if os.make_directory_all(pkg_dir) != nil {
@@ -183,8 +189,8 @@ cmd_new_pkg :: proc(args: []string) -> int {
 		return 1
 	}
 
-	fmt.printfln("created packages/local/%s", name)
-	fmt.printfln(`  import "local:%s"`, name)
+	fmt.printfln("created %s/%s", COLLECTION_LOCAL_DIR, name)
+	fmt.printfln(`  import "%s:%s"`, COLLECTION_LOCAL_NAME, name)
 	return 0
 }
 

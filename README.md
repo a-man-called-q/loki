@@ -20,14 +20,30 @@ loki keeps a three-part project shape in sync, so an Odin monorepo stays one
 Requires the [Odin compiler](https://odin-lang.org/docs/install/)
 (`dev-2026-07` or newer) on your `PATH`.
 
+macOS / Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/a-man-called-q/loki/main/install.sh | sh
+```
+
+Windows (PowerShell):
+
+```powershell
+irm https://raw.githubusercontent.com/a-man-called-q/loki/main/install.ps1 | iex
+```
+
+Both clone the repo, build it, and copy the binary onto your PATH (`~/.local/bin`
+on macOS/Linux, `%LOCALAPPDATA%\loki\bin` on Windows) — print a note if that
+directory isn't already there. Run `loki doctor` afterward to confirm the
+environment checks out.
+
+Prefer to build it yourself:
+
 ```bash
 git clone https://github.com/a-man-called-q/loki.git
 cd loki
-./build.sh
+./build.sh        # or build.ps1 on Windows
 ```
-
-Drop the resulting `bin/loki` on your `PATH`, then run `loki doctor` to
-confirm the environment checks out.
 
 ## Quick start
 
@@ -96,7 +112,8 @@ success `odin build` currently reports for those combinations.
 │   ├── local/           first-party packages, shared across apps
 │   └── vendor/          third-party packages, as git submodules
 ├── loki.json            project manifest
-└── build.sh              bootstraps bin/loki itself
+├── build.sh              bootstraps bin/loki itself (build.ps1 on Windows)
+└── install.sh            clone + build + install onto PATH (install.ps1 on Windows)
 ```
 
 ## Development

@@ -16,10 +16,10 @@ cmd_test :: proc(args: []string) -> int {
 		return run_odin(.Test, root, args[0], nil)
 	}
 
-	local_dir, _ := filepath.join({root, "packages", "local"}, context.temp_allocator)
+	local_dir, _ := filepath.join({root, COLLECTION_LOCAL_DIR}, context.temp_allocator)
 	pkg_dirs := discover_packages(local_dir, context.temp_allocator)
 	if len(pkg_dirs) == 0 {
-		fmt.eprintln("error: no packages found under packages/local/")
+		fmt.eprintfln("error: no packages found under %s/", COLLECTION_LOCAL_DIR)
 		return 1
 	}
 

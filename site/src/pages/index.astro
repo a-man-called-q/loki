@@ -31,7 +31,7 @@ import KnotDivider from "../components/KnotDivider.astro";
     </div>
   </section>
 
-  <div class="wrap"><KnotDivider seed="divider-1" /></div>
+  <KnotDivider seed="divider-1" width={1600} />
 
   <section id="why">
     <div class="wrap">
@@ -78,7 +78,7 @@ import KnotDivider from "../components/KnotDivider.astro";
     </div>
   </section>
 
-  <div class="wrap"><KnotDivider seed="divider-2" /></div>
+  <KnotDivider seed="divider-2" width={1600} />
 
   <section id="commands">
     <div class="wrap">
@@ -98,19 +98,38 @@ import KnotDivider from "../components/KnotDivider.astro";
     </div>
   </section>
 
-  <div class="wrap"><KnotDivider seed="divider-3" /></div>
+  <KnotDivider seed="divider-3" width={1600} />
 
   <section id="install">
     <div class="wrap">
       <h2 class="section-title">Install</h2>
-      <p class="section-lede">Needs the <a href="https://odin-lang.org/docs/install/">Odin compiler</a> (dev-2026-07 or newer) on your <code class="mono">PATH</code>. Build loki from source:</p>
-      <div class="install-box glow-hover">
-        <button class="copy-btn" id="copy-install" type="button">copy</button>
-        <pre><span class="p">$</span> <span class="c">git clone https://github.com/a-man-called-q/loki.git</span>
+      <p class="section-lede">Needs the <a href="https://odin-lang.org/docs/install/">Odin compiler</a> (dev-2026-07 or newer) on your <code class="mono">PATH</code>. The installer clones the repo, builds it, and copies the binary onto your PATH:</p>
+
+      <div class="install-tabs" role="tablist">
+        <button class="tab-btn" data-tab="unix" role="tab" aria-selected="true" type="button">macOS / Linux</button>
+        <button class="tab-btn" data-tab="win" role="tab" aria-selected="false" type="button">Windows</button>
+      </div>
+
+      <div class="install-box glow-hover" data-panel="unix">
+        <button class="copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/a-man-called-q/loki/main/install.sh | sh" type="button">copy</button>
+        <pre><span class="p">$</span> <span class="c">curl -fsSL https://raw.githubusercontent.com/a-man-called-q/loki/main/install.sh | sh</span></pre>
+      </div>
+      <div class="install-box glow-hover" data-panel="win" hidden>
+        <button class="copy-btn" data-copy="irm https://raw.githubusercontent.com/a-man-called-q/loki/main/install.ps1 | iex" type="button">copy</button>
+        <pre><span class="p">&gt;</span> <span class="c">irm https://raw.githubusercontent.com/a-man-called-q/loki/main/install.ps1 | iex</span></pre>
+      </div>
+
+      <p class="install-note">Drop-in target for both: <code class="mono">loki doctor</code> confirms the environment checks out once it's on your PATH.</p>
+
+      <details class="manual-install">
+        <summary>Build it yourself instead</summary>
+        <div class="install-box glow-hover">
+          <button class="copy-btn" data-copy="git clone https://github.com/a-man-called-q/loki.git&#10;cd loki&#10;./build.sh" type="button">copy</button>
+          <pre><span class="p">$</span> <span class="c">git clone https://github.com/a-man-called-q/loki.git</span>
 <span class="p">$</span> <span class="c">cd loki</span>
 <span class="p">$</span> <span class="c">./build.sh</span></pre>
-      </div>
-      <p class="install-note">Drop the resulting <code class="mono">bin/loki</code> on your PATH, then run <code class="mono">loki doctor</code> to confirm the environment checks out.</p>
+        </div>
+      </details>
     </div>
   </section>
 </Base>
@@ -166,7 +185,9 @@ import KnotDivider from "../components/KnotDivider.astro";
     padding: 1.25rem 1.4rem 1.5rem;
     font-family: var(--mono);
     font-size: 0.92rem;
-    min-height: 11.5em;
+    line-height: 1.6;
+    height: 17rem;
+    overflow: hidden;
   }
   .terminal-body :global(.line) { white-space: pre; }
   .terminal-body :global(.prompt) { color: var(--ember); }
@@ -244,6 +265,28 @@ import KnotDivider from "../components/KnotDivider.astro";
   .cmd-row span { color: var(--ash-dim); font-size: 0.92rem; }
 
   /* ---------- install ---------- */
+  .install-tabs {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+  }
+  .tab-btn {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    background: transparent;
+    border: 1px solid var(--crack);
+    color: var(--ash-dim);
+    padding: 0.5rem 0.9rem;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+  .tab-btn:hover { border-color: var(--ember); color: var(--ember-bright); }
+  .tab-btn[aria-selected="true"] {
+    background: color-mix(in srgb, var(--ember) 14%, transparent);
+    border-color: var(--ember);
+    color: var(--ember-bright);
+  }
+
   .install-box {
     background: var(--stone);
     border: 1px solid var(--crack);
@@ -280,6 +323,17 @@ import KnotDivider from "../components/KnotDivider.astro";
   }
   .copy-btn:hover { color: var(--ember-bright); border-color: var(--ember); }
   .install-note { margin: 1rem 0 0; font-size: 0.88rem; color: var(--smoke); }
+
+  .manual-install { margin-top: 1.5rem; }
+  .manual-install summary {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--ash-dim);
+    cursor: pointer;
+    padding: 0.3rem 0;
+  }
+  .manual-install summary:hover { color: var(--ember-bright); }
+  .manual-install .install-box { margin-top: 0.9rem; }
 </style>
 
 <script>
@@ -359,16 +413,29 @@ import KnotDivider from "../components/KnotDivider.astro";
     step();
   }
 
-  const copyBtn = document.getElementById("copy-install");
-  copyBtn?.addEventListener("click", async () => {
-    const cmds = "git clone https://github.com/a-man-called-q/loki.git\ncd loki\n./build.sh";
-    try {
-      await navigator.clipboard.writeText(cmds);
-      const original = copyBtn.textContent;
-      copyBtn.textContent = "copied";
-      setTimeout(() => { copyBtn.textContent = original; }, 1500);
-    } catch {
-      // clipboard API unavailable — silently ignore
-    }
+  document.querySelectorAll<HTMLButtonElement>(".copy-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const text = btn.dataset.copy;
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        const original = btn.textContent;
+        btn.textContent = "copied";
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      } catch {
+        // clipboard API unavailable — silently ignore
+      }
+    });
+  });
+
+  const tabBtns = document.querySelectorAll<HTMLButtonElement>(".tab-btn");
+  const panels = document.querySelectorAll<HTMLElement>("[data-panel]");
+  tabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      tabBtns.forEach((b) => b.setAttribute("aria-selected", String(b === btn)));
+      panels.forEach((p) => {
+        p.hidden = p.dataset.panel !== btn.dataset.tab;
+      });
+    });
   });
 </script>

@@ -38,6 +38,10 @@ cmd_doctor :: proc(args: []string) -> int {
 		ok = false
 	}
 
+	if !check_ols(root) {
+		ok = false
+	}
+
 	return exit_code_for(ok)
 }
 
@@ -154,4 +158,52 @@ check_platform_toolchain :: proc(app_name: string, platform: Platform) -> bool {
 		fmt.printfln("[ok]   %s (%s): cross-compiles with the Odin toolchain, no extra SDK needed", app_name, platform.label)
 		return true
 	}
+}
+
+// check_ols reports whether the Odin language server (github.com/DanielGavin/ols)
+// looks ready to use with this project, if it's installed at all. OLS is
+// optional editor tooling, not a build requirement, so its complete absence
+// is only [info]; once it's on PATH, a broken setup is worth flagging.
+@(private)
+check_ols :: proc(root: string) -> bool {
+	ols_path, found := find_in_path("ols", context.temp_allocator)
+	if !found {
+		fmt.println("[info] ols not found on PATH (optional — github.com/DanielGavin/ols)")
+		return true
+	}
+
+	all_ok := true
+
+	// ols needs its own repo's builtin/ folder to resolve builtin types and
+	// procedures — either next to the binary, or pointed at explicitly.
+	if builtin_env := os.get_env("OLS_BUILTIN_FOLDER", context.temp_allocator); builtin_env != "" {
+		if os.exists(builtin_env) {
+			fmt.printfln("[ok]   ols builtin folder set via OLS_BUILTIN_FOLDER (%s)", builtin_env)
+		} else {
+			fmt.printfln("[warn] OLS_BUILTIN_FOLDER is set to %q, but that path doesn't exist", builtin_env)
+			all_ok = false
+		}
+	} else {
+		adjacent, _ := filepath.join({filepath.dir(ols_path), "builtin"}, context.temp_allocator)
+		if os.exists(adjacent) {
+			fmt.printfln("[ok]   ols builtin folder found next to the binary")
+		} else {
+			fmt.println("[warn] ols is on PATH but has no builtin/ folder next to it, and OLS_BUILTIN_FOLDER isn't set")
+			fmt.println("       completion for builtin types/procedures may not work — see github.com/DanielGavin/ols#configuration")
+			all_ok = false
+		}
+	}
+
+	// ols.json is one way to tell ols about the local:/deps: collections,
+	// not the only one — editors can also supply that config directly, and
+	// loki has no way to see that from here. So this is [info], not [warn]:
+	// it doesn't know a missing file means anything is actually broken.
+	ols_json_path, _ := filepath.join({root, "ols.json"}, context.temp_allocator)
+	if os.exists(ols_json_path) {
+		fmt.println("[ok]   ols.json found")
+	} else {
+		fmt.println("[info] no ols.json in this project — fine if collections are configured through your editor instead")
+	}
+
+	return all_ok
 }

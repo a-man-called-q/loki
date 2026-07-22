@@ -6,6 +6,29 @@ TEMPLATE_GITIGNORE :: `bin/
 *.dSYM/
 `
 
+// render_ols_json points the Odin language server (github.com/DanielGavin/ols)
+// at loki's two collections, reusing the same COLLECTION_* constants
+// run_odin builds -collection: flags from — one place defines what "local"
+// and "deps" mean, and where they point, instead of the flags and this file
+// drifting apart. Unlike loki.json's apps map, this never needs updating as
+// packages are added — both collections are whole directories.
+render_ols_json :: proc() -> string {
+	return fmt.tprintf(
+		`{{
+	"$schema": "https://raw.githubusercontent.com/DanielGavin/ols/master/misc/ols.schema.json",
+	"collections": [
+		{{ "name": "%s", "path": "%s" }},
+		{{ "name": "%s", "path": "%s" }}
+	]
+}}
+`,
+		COLLECTION_LOCAL_NAME,
+		COLLECTION_LOCAL_DIR,
+		COLLECTION_VENDOR_NAME,
+		COLLECTION_VENDOR_DIR,
+	)
+}
+
 // render_app_main returns the starter main.odin for a new app. The braces
 // around the proc body are doubled ({{ }}) because fmt.tprintf's format
 // string also understands {}-style verbs, not just %-verbs — a lone brace

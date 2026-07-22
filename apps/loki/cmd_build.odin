@@ -94,6 +94,10 @@ build_for_target :: proc(root: string, rel_path: string, app_name: string, targe
 		case strings.has_suffix(platform.target, "wasm32") || strings.has_suffix(platform.target, "wasm64p32"):
 			out_name = fmt.tprintf("%s.wasm", out_name)
 		}
+	} else if ODIN_OS == .Windows {
+		// Host build on Windows: match the .exe suffix Windows needs to run
+		// it, same as the explicit windows_amd64 cross-target above.
+		out_name = fmt.tprintf("%s.exe", out_name)
 	}
 
 	out_path, _ := filepath.join({root, "bin", out_name}, context.temp_allocator)

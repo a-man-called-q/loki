@@ -2,6 +2,16 @@ package main
 
 import "core:fmt"
 
+// The two collections every loki project has: the -collection: name odin
+// sees them as, and the directory they point to. Defined once here because
+// both halves are baked into the -collection: flags below AND ols.json's
+// generated content (see render_ols_json in templates.odin) — two copies
+// of the same name or path would drift out of sync silently otherwise.
+COLLECTION_LOCAL_NAME :: "local"
+COLLECTION_LOCAL_DIR :: "packages/local"
+COLLECTION_VENDOR_NAME :: "deps"
+COLLECTION_VENDOR_DIR :: "packages/vendor"
+
 Odin_Cmd :: enum {
 	Run,
 	Build,
@@ -45,8 +55,8 @@ run_odin :: proc(
 		append(&command, "test")
 	}
 	append(&command, target_path)
-	append(&command, fmt.tprintf("-collection:local=%s/packages/local", project_root))
-	append(&command, fmt.tprintf("-collection:deps=%s/packages/vendor", project_root))
+	append(&command, fmt.tprintf("-collection:%s=%s/%s", COLLECTION_LOCAL_NAME, project_root, COLLECTION_LOCAL_DIR))
+	append(&command, fmt.tprintf("-collection:%s=%s/%s", COLLECTION_VENDOR_NAME, project_root, COLLECTION_VENDOR_DIR))
 	for f in extra_flags {
 		append(&command, f)
 	}
