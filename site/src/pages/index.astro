@@ -1,441 +1,616 @@
 ---
 import Base from "../layouts/Base.astro";
-import CrackedBasalt from "../components/CrackedBasalt.astro";
-import KnotDivider from "../components/KnotDivider.astro";
+import DependencyGraph from "../components/DependencyGraph.astro";
+
+const installCommand =
+  "curl -fsSL https://raw.githubusercontent.com/a-man-called-q/loki/main/install.sh | sh";
 ---
 
 <Base
-  title="loki — the Odin monorepo tool"
-  description="loki scaffolds, builds, and tests Odin monorepos: apps, first-party packages, and vendored git submodules, all from one CLI."
+  title="Loki — one workspace for every Odin app"
+  description="The monorepo CLI for Odin. Scaffold apps, share local packages, pin vendor dependencies, and cross-compile from one predictable workspace."
   activeNav="home"
 >
-  <section class="hero">
-    <CrackedBasalt seed="loki-hearth-hero" />
-    <div class="wrap hero-content">
-      <p class="eyebrow">an odin monorepo tool</p>
-      <h1 class="hero-title">One repo,<br /><span class="accent">every</span> app in it.</h1>
-      <p class="hero-sub">
-        loki scaffolds apps, wires up shared packages, and pins third-party
-        code as git submodules — so an Odin monorepo stays one <code class="mono">odin build</code>
-        away from working, no matter how many pieces it has.
-      </p>
-      <div class="hero-cta">
-        <a class="btn btn-primary" href="#install">Install loki</a>
-        <a class="btn btn-ghost" href="https://github.com/a-man-called-q/loki">View source</a>
-      </div>
+  <div class="home">
+    <section class="hero" id="overview">
+      <div class="hero-copy">
+        <h1>One workspace.<br />Every Odin app.</h1>
+        <p class="hero-lede">
+          Loki is the monorepo CLI for Odin. Scaffold apps, share local
+          packages, pin vendor dependencies, and cross-compile—together in one
+          workspace.
+        </p>
 
-      <div class="terminal glow-hover">
-        <div class="terminal-bar"><span>~/hearth</span><span>zsh</span></div>
-        <div class="terminal-body" id="tty" aria-hidden="true"></div>
-      </div>
-    </div>
-  </section>
-
-  <KnotDivider seed="divider-1" width={1600} />
-
-  <section id="why">
-    <div class="wrap">
-      <h2 class="section-title">Three directories, one tool</h2>
-      <p class="section-lede">
-        loki doesn't invent a new project shape — it works with the one
-        every Odin monorepo already has, and automates the parts that get
-        tedious by hand.
-      </p>
-
-      <div class="tree-box glow-hover">
-        <pre>hearth/
-├── loki.json
-├── <span class="hl">apps/</span>
-│   └── cli/
-├── packages/
-│   ├── <span class="hl">local/</span>
-│   │   └── utils/
-│   └── <span class="hl">vendor/</span>
-│       └── some-lib/
-└── bin/</pre>
-      </div>
-
-      <div class="why-grid">
-        <div class="why-card glow-hover">
-          <div>
-            <span class="path">apps/</span>
-            <p>Every binary in the repo, scaffolded the same way. <code class="mono">loki build</code> compiles one app or all of them, each to its own <code class="mono">bin/</code> output.</p>
-          </div>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#install">
+            <span class="terminal-glyph" aria-hidden="true">&gt;_</span>
+            Get Loki
+          </a>
+          <a class="button button-secondary" href="https://github.com/a-man-called-q/loki">
+            <span class="github-glyph" aria-hidden="true">●</span>
+            View on GitHub
+          </a>
         </div>
-        <div class="why-card glow-hover">
-          <div>
-            <span class="path">packages/local/</span>
-            <p>First-party code shared across apps. loki discovers leaf packages by walking the tree — no manifest entry to keep in sync by hand.</p>
-          </div>
-        </div>
-        <div class="why-card glow-hover">
-          <div>
-            <span class="path">packages/vendor/</span>
-            <p>Third-party dependencies, pinned as git submodules. <code class="mono">loki doctor</code> catches uninitialized or drifted vendor code before it breaks a build.</p>
+
+        <div class="quick-install" id="install">
+          <p>Install with one command:</p>
+          <div class="command-line">
+            <span aria-hidden="true">$</span>
+            <code title={installCommand}>{installCommand}</code>
+            <button type="button" data-copy={installCommand} aria-label="Copy install command">
+              <span class="copy-icon" aria-hidden="true"></span>
+              <span class="copy-label">Copy</span>
+            </button>
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <KnotDivider seed="divider-2" width={1600} />
-
-  <section id="commands">
-    <div class="wrap">
-      <h2 class="section-title">Commands</h2>
-      <p class="section-lede">The full surface area. Run <code class="mono">loki help</code> any time for this from the terminal.</p>
-      <div class="cmd-list">
-        <div class="cmd-row"><code class="mono">loki new &lt;name&gt; [--target=id,...]</code><span>Scaffold a new monorepo project</span></div>
-        <div class="cmd-row"><code class="mono">loki new app &lt;name&gt; [--target=id,...]</code><span>Scaffold a new app in the current project</span></div>
-        <div class="cmd-row"><code class="mono">loki new pkg &lt;name&gt;</code><span>Scaffold a new local package in the current project</span></div>
-        <div class="cmd-row"><code class="mono">loki add &lt;git-url&gt; [name]</code><span>Add a third-party package as a git submodule</span></div>
-        <div class="cmd-row"><code class="mono">loki sync</code><span>Init/update all vendor submodules</span></div>
-        <div class="cmd-row"><code class="mono">loki run &lt;app&gt; [-- args]</code><span>Run an app</span></div>
-        <div class="cmd-row"><code class="mono">loki build [app]</code><span>Build an app, or every app if omitted — per cross-compile target, if any are set</span></div>
-        <div class="cmd-row"><code class="mono">loki test [target]</code><span>Test a package, or every local package if omitted</span></div>
-        <div class="cmd-row"><code class="mono">loki doctor</code><span>Check that the environment — and any cross-compile toolchains — are set up correctly</span></div>
+      <div class="hero-visual">
+        <DependencyGraph class="hero-graph" />
       </div>
-    </div>
-  </section>
+    </section>
 
-  <KnotDivider seed="divider-3" width={1600} />
+    <section class="benefits" aria-label="Why Loki">
+      <article>
+        <span class="feature-icon leaf-icon" aria-hidden="true"></span>
+        <h2>Start clean</h2>
+        <p>
+          Scaffold new apps and packages with sensible defaults for Odin. Keep
+          a consistent structure and toolchain across your workspace.
+        </p>
+      </article>
+      <article>
+        <span class="feature-icon people-icon" aria-hidden="true">
+          <i></i><i></i>
+        </span>
+        <h2>Share locally</h2>
+        <p>
+          Link packages instantly across the workspace. Iterate fast without
+          publishing—changes are available where you need them.
+        </p>
+      </article>
+      <article>
+        <span class="feature-icon globe-icon" aria-hidden="true"></span>
+        <h2>Ship anywhere</h2>
+        <p>
+          Pin vendor dependencies for reproducible builds and cross-compile for
+          macOS, Linux, Windows, web, iOS, and Android.
+        </p>
+      </article>
+    </section>
 
-  <section id="install">
-    <div class="wrap">
-      <h2 class="section-title">Install</h2>
-      <p class="section-lede">Needs the <a href="https://odin-lang.org/docs/install/">Odin compiler</a> (dev-2026-07 or newer) on your <code class="mono">PATH</code>. The installer clones the repo, builds it, and copies the binary onto your PATH:</p>
-
-      <div class="install-tabs" role="tablist">
-        <button class="tab-btn" data-tab="unix" role="tab" aria-selected="true" type="button">macOS / Linux</button>
-        <button class="tab-btn" data-tab="win" role="tab" aria-selected="false" type="button">Windows</button>
-      </div>
-
-      <div class="install-box glow-hover" data-panel="unix">
-        <button class="copy-btn" data-copy="curl -fsSL https://raw.githubusercontent.com/a-man-called-q/loki/main/install.sh | sh" type="button">copy</button>
-        <pre><span class="p">$</span> <span class="c">curl -fsSL https://raw.githubusercontent.com/a-man-called-q/loki/main/install.sh | sh</span></pre>
-      </div>
-      <div class="install-box glow-hover" data-panel="win" hidden>
-        <button class="copy-btn" data-copy="irm https://raw.githubusercontent.com/a-man-called-q/loki/main/install.ps1 | iex" type="button">copy</button>
-        <pre><span class="p">&gt;</span> <span class="c">irm https://raw.githubusercontent.com/a-man-called-q/loki/main/install.ps1 | iex</span></pre>
+    <section class="workspace-section" id="workspace">
+      <div class="section-heading">
+        <h2>Workspace structure</h2>
+        <p>A single, predictable layout for your entire Odin ecosystem.</p>
       </div>
 
-      <p class="install-note">Drop-in target for both: <code class="mono">loki doctor</code> confirms the environment checks out once it's on your PATH.</p>
+      <div class="workspace-grid">
+        <article class="code-card tree-card" aria-label="Example Loki workspace structure">
+          <div class="tree-root">my-workspace/</div>
+          <div class="tree">
+            <div><span class="branch">├──</span> <span class="file-icon">◆</span> loki.json</div>
+            <div><span class="branch">├──</span> <span class="folder-icon gold"></span> apps/</div>
+            <div class="depth-1"><span class="branch">├──</span> <span class="folder-icon"></span> web/</div>
+            <div class="depth-1"><span class="branch">└──</span> <span class="folder-icon"></span> cli/</div>
+            <div><span class="branch">├──</span> <span class="folder-icon gold"></span> packages/</div>
+            <div class="depth-1"><span class="branch">├──</span> <span class="folder-icon"></span> local/</div>
+            <div class="depth-2"><span class="branch">├──</span> core/</div>
+            <div class="depth-2"><span class="branch">└──</span> utils/</div>
+            <div class="depth-1"><span class="branch">└──</span> <span class="folder-icon green"></span> vendor/</div>
+            <div><span class="branch">└──</span> <span class="file-icon">◇</span> README.md</div>
+          </div>
+        </article>
 
-      <details class="manual-install">
-        <summary>Build it yourself instead</summary>
-        <div class="install-box glow-hover">
-          <button class="copy-btn" data-copy="git clone https://github.com/a-man-called-q/loki.git&#10;cd loki&#10;./build.sh" type="button">copy</button>
-          <pre><span class="p">$</span> <span class="c">git clone https://github.com/a-man-called-q/loki.git</span>
-<span class="p">$</span> <span class="c">cd loki</span>
-<span class="p">$</span> <span class="c">./build.sh</span></pre>
+        <article class="code-card manifest-card" aria-label="Example Loki manifest">
+          <div class="card-title">loki.json</div>
+          <ol class="code-list">
+            <li><code>{`{`}</code></li>
+            <li><code><span class="key">"name"</span>: <span class="string">"my-workspace"</span>,</code></li>
+            <li><code><span class="key">"apps"</span>: {`{`}</code></li>
+            <li><code>&nbsp;&nbsp;<span class="key">"web"</span>: <span class="string">"apps/web"</span>,</code></li>
+            <li><code>&nbsp;&nbsp;<span class="key">"cli"</span>: <span class="string">"apps/cli"</span></code></li>
+            <li><code>{`}`},</code></li>
+            <li><code><span class="key">"targets"</span>: [</code></li>
+            <li><code>&nbsp;&nbsp;<span class="string">"darwin_arm64"</span>,</code></li>
+            <li><code>&nbsp;&nbsp;<span class="string">"linux_amd64"</span>,</code></li>
+            <li><code>&nbsp;&nbsp;<span class="string">"windows_amd64"</span>,</code></li>
+            <li><code>&nbsp;&nbsp;<span class="string">"web"</span></code></li>
+            <li><code>]</code></li>
+            <li><code>{`}`}</code></li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <section class="terminal-section" id="commands">
+      <div class="section-heading">
+        <h2>One CLI. Everything in sync.</h2>
+        <p>Loki keeps your workspace consistent and your builds reproducible.</p>
+      </div>
+
+      <div class="terminal" aria-label="Example Loki terminal session">
+        <div class="terminal-bar">
+          <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>Terminal</span>
+          <span></span>
         </div>
-      </details>
+        <div class="terminal-body">
+          <p><span class="terminal-prompt">$</span> loki new hearth</p>
+          <p class="output">✓ Created hearth/</p>
+          <p><span class="terminal-prompt">$</span> cd hearth &amp;&amp; loki new app web --target=web</p>
+          <p class="output">✓ Created apps/web</p>
+          <p><span class="terminal-prompt">$</span> loki new pkg core</p>
+          <p class="output">✓ Created packages/local/core</p>
+          <p><span class="terminal-prompt">$</span> loki build</p>
+          <p class="output">✓ Built web-web</p>
+          <p><span class="terminal-prompt">$</span> loki doctor</p>
+          <p class="output">✓ Workspace ready</p>
+          <p><span class="terminal-prompt">$</span> <span class="cursor" aria-hidden="true"></span></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="final-cta">
+    <div class="cta-inner">
+      <h2>Ready to build<br />your workspace?</h2>
+      <div class="cta-action">
+        <p>Install Loki and scaffold your first app in seconds.</p>
+        <div>
+          <a class="button button-dark-green" href="#install">
+            <span class="terminal-glyph" aria-hidden="true">&gt;_</span>
+            Get Loki
+          </a>
+          <a class="button button-light" href="https://github.com/a-man-called-q/loki">
+            <span class="github-glyph" aria-hidden="true">●</span>
+            View on GitHub
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 </Base>
 
-<style>
-  .hero {
-    position: relative;
-    overflow: hidden;
-    padding-block: clamp(3rem, 8vw, 6rem) clamp(2.5rem, 6vw, 4rem);
-  }
-  .hero-content { position: relative; z-index: 1; }
-
-  h1.hero-title {
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: clamp(2.3rem, 6vw, 3.6rem);
-    line-height: 1.08;
-    letter-spacing: -0.01em;
-    margin: 0 0 1.1rem;
-    text-wrap: balance;
-  }
-  h1.hero-title .accent { color: var(--ember); }
-
-  .hero-sub {
-    font-size: clamp(1.05rem, 2vw, 1.2rem);
-    color: var(--ash-dim);
-    max-width: 46ch;
-    margin: 0 0 2.25rem;
-  }
-
-  .hero-cta { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 3rem; }
-
-  /* ---------- terminal ---------- */
-  .terminal {
-    background: color-mix(in srgb, var(--stone) 92%, transparent);
-    backdrop-filter: blur(6px);
-    border: 1px solid var(--crack);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
-  .terminal-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.55rem 1rem;
-    border-bottom: 1px solid var(--crack);
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--smoke);
-  }
-  .terminal-body {
-    padding: 1.25rem 1.4rem 1.5rem;
-    font-family: var(--mono);
-    font-size: 0.92rem;
-    line-height: 1.6;
-    height: 17rem;
-    overflow: hidden;
-  }
-  .terminal-body :global(.line) { white-space: pre; }
-  .terminal-body :global(.prompt) { color: var(--ember); }
-  .terminal-body :global(.out) { color: var(--ash-dim); }
-  :global(.caret) {
-    display: inline-block;
-    width: 0.55em;
-    height: 1em;
-    background: var(--glint);
-    vertical-align: text-bottom;
-    margin-left: 2px;
-    animation: blink 1s step-end infinite;
-  }
-  @media (prefers-reduced-motion: reduce) { :global(.caret) { animation: none; } }
-  @keyframes blink { 50% { opacity: 0; } }
-
-  /* ---------- tree example ---------- */
-  .tree-box {
-    background: var(--stone);
-    border: 1px solid var(--crack);
-    border-radius: var(--radius);
-    margin-bottom: 1.5rem;
-    overflow: hidden;
-  }
-  .tree-box pre {
-    margin: 0;
-    padding: 1.2rem 1.4rem;
-    font-family: var(--mono);
-    font-size: 0.86rem;
-    line-height: 1.7;
-    color: var(--ash-dim);
-    overflow-x: auto;
-  }
-  .tree-box pre :global(.hl) { color: var(--glint); font-weight: 600; }
-
-  /* ---------- why grid ---------- */
-  .why-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.1rem;
-  }
-  @media (max-width: 760px) { .why-grid { grid-template-columns: 1fr; } }
-  .why-card {
-    background: var(--stone);
-    border: 1px solid var(--crack);
-    border-radius: var(--radius);
-    padding: 1.4rem 1.3rem;
-    overflow: hidden;
-  }
-  .why-card .path {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    color: var(--glint);
-    background: color-mix(in srgb, var(--glint) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--glint) 30%, transparent);
-    border-radius: 5px;
-    padding: 0.15rem 0.5rem;
-    margin-bottom: 0.8rem;
-  }
-  .why-card p { margin: 0; color: var(--ash-dim); font-size: 0.94rem; }
-
-  /* ---------- commands ---------- */
-  .cmd-list { border-top: 1px solid var(--crack); }
-  .cmd-row {
-    display: grid;
-    grid-template-columns: minmax(220px, 320px) 1fr;
-    gap: 1.5rem;
-    padding: 0.85rem 0;
-    border-bottom: 1px solid var(--crack);
-    align-items: baseline;
-  }
-  @media (max-width: 640px) { .cmd-row { grid-template-columns: 1fr; gap: 0.25rem; } }
-  .cmd-row code { color: var(--ember-bright); font-size: 0.88rem; }
-  .cmd-row span { color: var(--ash-dim); font-size: 0.92rem; }
-
-  /* ---------- install ---------- */
-  .install-tabs {
-    display: flex;
-    gap: 0.4rem;
-    margin-bottom: 0.75rem;
-  }
-  .tab-btn {
-    font-family: var(--mono);
-    font-size: 0.82rem;
-    background: transparent;
-    border: 1px solid var(--crack);
-    color: var(--ash-dim);
-    padding: 0.5rem 0.9rem;
-    border-radius: 7px;
-    cursor: pointer;
-  }
-  .tab-btn:hover { border-color: var(--ember); color: var(--ember-bright); }
-  .tab-btn[aria-selected="true"] {
-    background: color-mix(in srgb, var(--ember) 14%, transparent);
-    border-color: var(--ember);
-    color: var(--ember-bright);
-  }
-
-  .install-box {
-    background: var(--stone);
-    border: 1px solid var(--crack);
-    border-radius: var(--radius);
-    position: relative;
-    overflow: hidden;
-  }
-  .install-box pre {
-    margin: 0;
-    padding: 1.3rem 4.2rem 1.3rem 1.4rem;
-    font-family: var(--mono);
-    font-size: 0.88rem;
-    line-height: 1.8;
-    overflow-x: auto;
-    color: var(--ash-dim);
-  }
-  .install-box pre :global(.p) { color: var(--ember); }
-  .install-box pre :global(.c) { color: var(--ash); }
-  .copy-btn {
-    position: absolute;
-    top: 0.65rem;
-    right: 0.65rem;
-    min-width: 44px;
-    min-height: 44px;
-    background: var(--stone-2);
-    border: 1px solid var(--crack);
-    color: var(--smoke);
-    font-family: var(--mono);
-    font-size: 0.76rem;
-    padding: 0.3rem 0.7rem;
-    border-radius: 6px;
-    cursor: pointer;
-    z-index: 1;
-  }
-  .copy-btn:hover { color: var(--ember-bright); border-color: var(--ember); }
-  .install-note { margin: 1rem 0 0; font-size: 0.88rem; color: var(--smoke); }
-
-  .manual-install { margin-top: 1.5rem; }
-  .manual-install summary {
-    font-family: var(--mono);
-    font-size: 0.85rem;
-    color: var(--ash-dim);
-    cursor: pointer;
-    padding: 0.3rem 0;
-  }
-  .manual-install summary:hover { color: var(--ember-bright); }
-  .manual-install .install-box { margin-top: 0.9rem; }
-</style>
-
 <script>
-  const ttyEl = document.getElementById("tty");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const script = [
-    { type: "cmd", text: "loki new hearth" },
-    { type: "out", text: "created hearth/" },
-    { type: "cmd", text: "cd hearth && loki new app cli" },
-    { type: "out", text: "created apps/cli/" },
-    { type: "cmd", text: "loki new pkg utils" },
-    { type: "out", text: "created packages/local/utils/" },
-    { type: "cmd", text: "loki build" },
-    { type: "out", text: "building cli...\nbuilt bin/cli" },
-  ];
-
-  function renderStatic() {
-    if (!ttyEl) return;
-    ttyEl.innerHTML = script
-      .map((l) => {
-        if (l.type === "cmd") return `<div class="line"><span class="prompt">$</span> ${l.text}</div>`;
-        return `<div class="line out">${l.text.replace(/\n/g, '</div><div class="line out">')}</div>`;
-      })
-      .join("");
-  }
-
-  if (!ttyEl) {
-    // no-op
-  } else if (reduceMotion) {
-    renderStatic();
-  } else {
-    let li = 0, ci = 0;
-    const speed = 26;
-
-    function step() {
-      if (li >= script.length) {
-        const caret = document.createElement("span");
-        caret.className = "caret";
-        ttyEl!.appendChild(caret);
-        return;
-      }
-      const item = script[li];
-
-      if (ci === 0) {
-        const div = document.createElement("div");
-        div.className = "line" + (item.type === "out" ? " out" : "");
-        if (item.type === "cmd") {
-          const p = document.createElement("span");
-          p.className = "prompt";
-          p.textContent = "$ ";
-          div.appendChild(p);
-        }
-        div.appendChild(document.createTextNode(""));
-        ttyEl!.appendChild(div);
-      }
-
-      const line = ttyEl!.lastChild as HTMLElement;
-
-      if (item.type === "out") {
-        line.textContent = item.text.slice(0, ci + 1);
-      } else {
-        const textNode = line.lastChild as Text;
-        textNode.textContent = item.text.slice(0, ci + 1);
-      }
-
-      ci++;
-      if (ci >= item.text.length) {
-        li++;
-        ci = 0;
-        setTimeout(step, item.type === "out" ? 260 : 420);
-      } else {
-        setTimeout(step, item.type === "out" ? 6 : speed);
-      }
-    }
-
-    step();
-  }
-
-  document.querySelectorAll<HTMLButtonElement>(".copy-btn").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const text = btn.dataset.copy;
-      if (!text) return;
+  document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const label = button.querySelector<HTMLElement>(".copy-label");
       try {
-        await navigator.clipboard.writeText(text);
-        const original = btn.textContent;
-        btn.textContent = "copied";
-        setTimeout(() => { btn.textContent = original; }, 1500);
+        await navigator.clipboard.writeText(button.dataset.copy ?? "");
+        if (label) label.textContent = "Copied";
       } catch {
-        // clipboard API unavailable — silently ignore
+        if (label) label.textContent = "Select";
       }
-    });
-  });
-
-  const tabBtns = document.querySelectorAll<HTMLButtonElement>(".tab-btn");
-  const panels = document.querySelectorAll<HTMLElement>("[data-panel]");
-  tabBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      tabBtns.forEach((b) => b.setAttribute("aria-selected", String(b === btn)));
-      panels.forEach((p) => {
-        p.hidden = p.dataset.panel !== btn.dataset.tab;
-      });
+      window.setTimeout(() => {
+        if (label) label.textContent = "Copy";
+      }, 1600);
     });
   });
 </script>
+
+<style>
+  .home {
+    --page-width: 1240px;
+    background:
+      radial-gradient(circle at 66% 8%, rgba(22, 87, 52, .09), transparent 29%),
+      #080d0a;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, .94fr) minmax(440px, 1.06fr);
+    align-items: center;
+    gap: clamp(2rem, 4vw, 5rem);
+    width: min(calc(100% - 3rem), var(--page-width));
+    min-height: 610px;
+    margin: 0 auto;
+    padding: clamp(4.5rem, 8vw, 7.5rem) 0 clamp(4rem, 7vw, 6rem);
+  }
+
+  .hero-copy { position: relative; z-index: 2; }
+  h1 {
+    max-width: 760px;
+    margin: 0;
+    color: #f2f3ee;
+    font-size: clamp(3.4rem, 6.2vw, 5.9rem);
+    font-weight: 720;
+    letter-spacing: -.055em;
+    line-height: .98;
+    text-wrap: balance;
+  }
+  .hero-lede {
+    max-width: 590px;
+    margin: 1.65rem 0 0;
+    color: #a7b1aa;
+    font-size: clamp(1rem, 1.45vw, 1.16rem);
+    line-height: 1.62;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2.25rem;
+  }
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+    min-height: 48px;
+    padding: 0 1.4rem;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: .92rem;
+    font-weight: 650;
+    line-height: 1;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .button:hover { text-decoration: none; transform: translateY(-1px); }
+  .button-primary {
+    min-width: 170px;
+    color: #07110a;
+    background: linear-gradient(90deg, #35c873, #70ea96);
+  }
+  .button-primary:hover { background: linear-gradient(90deg, #48d782, #88f0a8); }
+  .button-secondary {
+    min-width: 190px;
+    color: #edf1ed;
+    border-color: #59645d;
+    background: rgba(13, 19, 15, .72);
+  }
+  .button-secondary:hover { border-color: #89938d; }
+  .terminal-glyph { font: 700 1rem var(--mono); }
+  .github-glyph {
+    display: grid;
+    place-items: center;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    color: #080d0a;
+    background: currentColor;
+    box-shadow: inset 0 0 0 5px #edf1ed;
+  }
+
+  .quick-install { max-width: 570px; margin-top: 2rem; }
+  .quick-install > p {
+    margin: 0 0 .55rem;
+    color: #828e86;
+    font: .76rem var(--mono);
+  }
+  .command-line {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .85rem;
+    min-height: 46px;
+    padding: 0 .55rem 0 .9rem;
+    border: 1px solid #253029;
+    border-radius: 6px;
+    background: rgba(13, 19, 15, .75);
+    color: #d4dcd6;
+  }
+  .command-line > span { color: #8e9992; font: .78rem var(--mono); }
+  .command-line code {
+    overflow: hidden;
+    color: #c3ccc6;
+    font-size: .76rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .command-line button {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    border: 0;
+    background: transparent;
+    color: #939f97;
+    padding: .6rem;
+    font: .7rem var(--mono);
+    cursor: pointer;
+  }
+  .command-line button:hover { color: #66e895; }
+  .copy-icon {
+    position: relative;
+    width: 13px;
+    height: 13px;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+  }
+  .copy-icon::before {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    top: -4px;
+    left: -4px;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    background: #0d130f;
+  }
+
+  .hero-visual {
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    padding-top: 1.5rem;
+  }
+  :global(.hero-graph) { width: min(100%, 610px); }
+
+  .benefits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: min(calc(100% - 3rem), var(--page-width));
+    margin: 0 auto;
+    padding: clamp(3.3rem, 6vw, 5rem) 0;
+    border-top: 1px solid #1f2922;
+    border-bottom: 1px solid #1f2922;
+  }
+  .benefits article {
+    min-width: 0;
+    padding: 0 clamp(2rem, 4vw, 4.25rem);
+    border-right: 1px solid #202a23;
+  }
+  .benefits article:first-child { padding-left: 0; }
+  .benefits article:last-child { padding-right: 0; border-right: 0; }
+  .benefits h2 {
+    margin: 1.1rem 0 .65rem;
+    color: #edf1ed;
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+    letter-spacing: -.025em;
+  }
+  .benefits p {
+    max-width: 35ch;
+    margin: 0;
+    color: #929e96;
+    font-size: .9rem;
+    line-height: 1.62;
+  }
+  .feature-icon { position: relative; display: block; width: 31px; height: 31px; color: #62e494; }
+  .leaf-icon {
+    width: 26px;
+    height: 30px;
+    border: 2px solid currentColor;
+    border-radius: 100% 0 100% 0;
+    transform: rotate(-12deg);
+  }
+  .leaf-icon::after {
+    content: "";
+    position: absolute;
+    width: 28px;
+    height: 2px;
+    top: 16px;
+    left: -7px;
+    background: currentColor;
+    transform: rotate(-42deg);
+    transform-origin: center;
+  }
+  .people-icon i {
+    position: absolute;
+    top: 2px;
+    width: 8px;
+    height: 8px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+  }
+  .people-icon i:first-child { left: 4px; }
+  .people-icon i:last-child { right: 4px; }
+  .people-icon::before,
+  .people-icon::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    width: 14px;
+    height: 12px;
+    border: 2px solid currentColor;
+    border-bottom: 0;
+    border-radius: 12px 12px 0 0;
+  }
+  .people-icon::before { left: 0; }
+  .people-icon::after { right: 0; }
+  .globe-icon {
+    color: #efbd4d;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+  }
+  .globe-icon::before {
+    content: "";
+    position: absolute;
+    inset: -2px 7px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+  }
+  .globe-icon::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    top: 50%;
+    border-top: 2px solid currentColor;
+  }
+
+  .workspace-section,
+  .terminal-section {
+    width: min(calc(100% - 3rem), var(--page-width));
+    margin: 0 auto;
+  }
+  .workspace-section { padding: clamp(3.5rem, 6vw, 5rem) 0 2rem; }
+  .terminal-section { padding: 2rem 0 clamp(4rem, 7vw, 6rem); }
+  .section-heading h2 {
+    margin: 0;
+    color: #edf1ed;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    letter-spacing: -.03em;
+  }
+  .section-heading p {
+    margin: .35rem 0 0;
+    color: #8f9a93;
+    font-size: .92rem;
+  }
+  .workspace-grid {
+    display: grid;
+    grid-template-columns: .85fr 1.15fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .code-card {
+    min-width: 0;
+    min-height: 360px;
+    border: 1px solid #253029;
+    border-radius: 6px;
+    background:
+      linear-gradient(145deg, rgba(20, 31, 24, .58), rgba(9, 14, 11, .72)),
+      #0c120e;
+    box-shadow: 0 20px 55px rgba(0, 0, 0, .14);
+    overflow: hidden;
+  }
+  .tree-card { padding: 1.25rem 1.4rem; font: .8rem/1.72 var(--mono); color: #c8d0cb; }
+  .tree-root, .card-title { color: #79dd80; font: .78rem var(--mono); }
+  .tree { margin-top: .45rem; }
+  .tree > div { white-space: nowrap; }
+  .branch { color: #7d8981; }
+  .depth-1 { padding-left: 2rem; }
+  .depth-2 { padding-left: 4rem; color: #9ca79f; }
+  .folder-icon {
+    display: inline-block;
+    width: 13px;
+    height: 9px;
+    margin-right: .35rem;
+    border-radius: 1px;
+    background: #d9ded9;
+  }
+  .folder-icon::before {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 2px;
+    margin-top: -2px;
+    border-radius: 1px 1px 0 0;
+    background: inherit;
+  }
+  .folder-icon.gold { background: #efbd4d; }
+  .folder-icon.green { background: #69b95f; }
+  .file-icon { color: #b7c0ba; font-size: .65rem; }
+
+  .manifest-card { padding: 1.25rem 1.4rem; }
+  .code-list {
+    margin: .8rem 0 0;
+    padding: 0 0 0 2.6rem;
+    color: #657169;
+    font: .78rem/1.7 var(--mono);
+  }
+  .code-list li { padding-left: .6rem; }
+  .code-list code { color: #d0d6d2; }
+  .code-list .key { color: #efbd4d; }
+  .code-list .string { color: #77dd7d; }
+
+  .terminal {
+    margin-top: 1.45rem;
+    overflow: hidden;
+    border: 1px solid #2a342d;
+    border-radius: 6px;
+    background: #080d0a;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, .2);
+  }
+  .terminal-bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    min-height: 38px;
+    padding: 0 1rem;
+    border-bottom: 1px solid #2a342d;
+    background: #151c17;
+    color: #88948c;
+    font: .7rem var(--mono);
+  }
+  .terminal-dots { display: flex; gap: .45rem; }
+  .terminal-dots i { width: 9px; height: 9px; border-radius: 50%; background: #f2705f; }
+  .terminal-dots i:nth-child(2) { background: #edbd4d; }
+  .terminal-dots i:nth-child(3) { background: #60c56f; }
+  .terminal-body { min-height: 330px; padding: 1rem 1.25rem 1.25rem; font: .78rem/1.58 var(--mono); }
+  .terminal-body p { margin: 0; color: #d6ddd8; }
+  .terminal-body .output, .terminal-prompt { color: #72e47d; }
+  .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 13px;
+    vertical-align: -2px;
+    background: #d8dfda;
+    animation: blink 1.05s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .final-cta {
+    padding: 0;
+    background: #edece4;
+    color: #0c120e;
+  }
+  .cta-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    width: min(calc(100% - 3rem), 1160px);
+    min-height: 230px;
+    margin: 0 auto;
+    padding: 3rem 0;
+  }
+  .cta-inner h2 {
+    margin: 0;
+    font-size: clamp(2.3rem, 4.5vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -.05em;
+  }
+  .cta-action {
+    padding-left: clamp(2rem, 5vw, 5rem);
+    border-left: 1px solid #b9b9b1;
+  }
+  .cta-action p { max-width: 340px; margin: 0 0 1.15rem; color: #313a34; line-height: 1.5; }
+  .cta-action > div { display: flex; flex-wrap: wrap; gap: .8rem; }
+  .button-dark-green { color: #fff; background: #218c49; }
+  .button-dark-green:hover { background: #18753b; }
+  .button-light { color: #111712; border-color: #424a44; background: transparent; }
+  .button-light .github-glyph { box-shadow: inset 0 0 0 5px #111712; }
+
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; padding-top: 5.5rem; }
+    .hero-copy { max-width: 720px; }
+    .hero-visual { padding-top: 2rem; }
+    :global(.hero-graph) { width: min(100%, 680px); }
+    .workspace-grid { grid-template-columns: 1fr; }
+    .code-card { min-height: 330px; }
+  }
+  @media (max-width: 720px) {
+    .hero,
+    .benefits,
+    .workspace-section,
+    .terminal-section,
+    .cta-inner { width: min(calc(100% - 2rem), var(--page-width)); }
+    .hero { min-height: 0; padding: 4.2rem 0 3rem; }
+    h1 { font-size: clamp(3.1rem, 15vw, 5rem); }
+    .hero-lede { font-size: .98rem; }
+    .hero-actions { align-items: stretch; flex-direction: column; }
+    .button-primary, .button-secondary { width: 100%; }
+    .copy-label { display: none; }
+    .benefits { grid-template-columns: 1fr; padding: 1.2rem 0; }
+    .benefits article,
+    .benefits article:first-child,
+    .benefits article:last-child {
+      padding: 2rem 0;
+      border-right: 0;
+      border-bottom: 1px solid #202a23;
+    }
+    .benefits article:last-child { border-bottom: 0; }
+    .workspace-section { padding-top: 3.5rem; }
+    .workspace-grid { gap: 1rem; }
+    .tree-card { overflow-x: auto; }
+    .manifest-card { overflow-x: auto; }
+    .terminal-body { min-height: 310px; overflow-x: auto; }
+    .terminal-body p { white-space: nowrap; }
+    .cta-inner { grid-template-columns: 1fr; gap: 2rem; padding: 3.5rem 0; }
+    .cta-action { padding: 2rem 0 0; border-top: 1px solid #b9b9b1; border-left: 0; }
+    .cta-action > div { flex-direction: column; }
+    .cta-action .button { width: 100%; }
+  }
+</style>

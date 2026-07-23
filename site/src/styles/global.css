@@ -18,24 +18,6 @@
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --void: #eaeee9;
-    --stone: #f8faf6;
-    --stone-2: #eef1ea;
-    --crack: #d3dcd2;
-    --ash: #141a15;
-    --ash-dim: #48524b;
-    --smoke: #5f6b63;
-    --ember: #147942;
-    --ember-bright: #0e6b3a;
-    --ember-deep: #0a4d2b;
-    --glint: #8a5a00;
-    --on-ember: #f3fbf6;
-    --shadow: 0 20px 50px -30px rgba(40, 30, 10, 0.35);
-  }
-}
-
 :root[data-theme="dark"] {
   --void: #0a0d0b;
   --stone: #141a15;
@@ -69,7 +51,7 @@
 }
 
 * { box-sizing: border-box; }
-html { color-scheme: dark light; }
+html { color-scheme: dark; scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -78,6 +60,7 @@ body {
   font-family: var(--sans);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 ::selection { background: color-mix(in srgb, var(--ember) 40%, transparent); }
@@ -92,7 +75,7 @@ a:focus-visible, button:focus-visible {
 
 code, .mono { font-family: var(--mono); }
 
-.wrap { max-width: 880px; margin-inline: auto; padding-inline: 1.5rem; }
+.wrap { width: min(100%, 1312px); margin-inline: auto; padding-inline: clamp(1.25rem, 3vw, 2rem); }
 
 /* ---------- glow-hover: crack lights up under the cursor ---------- */
 .glow-hover {
@@ -119,15 +102,16 @@ header.topbar {
   position: sticky;
   top: 0;
   z-index: 10;
-  backdrop-filter: blur(10px);
-  background: color-mix(in srgb, var(--void) 80%, transparent);
-  border-bottom: 1px solid var(--crack);
+  backdrop-filter: blur(18px);
+  background: rgba(8, 13, 10, 0.9);
+  border-bottom: 1px solid #1f2922;
 }
 .topbar-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-block: 0.9rem;
+  min-height: 68px;
+  padding-block: 0.65rem;
 }
 .wordmark {
   display: inline-flex;
@@ -143,18 +127,19 @@ header.topbar {
 .wordmark .runes {
   font-family: "Noto Sans Runic", var(--mono);
   font-weight: 400;
-  font-size: 1.3rem;
-  letter-spacing: 0.06em;
+  font-size: 1.45rem;
+  letter-spacing: 0.1em;
   line-height: 1;
 }
 .topbar-links {
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  font-family: var(--mono);
-  font-size: 0.85rem;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 560;
 }
-.topbar-links a { color: var(--ash-dim); }
+.topbar-links a { color: #d3d9d5; }
 .topbar-links a:hover { color: var(--ember-bright); }
 .topbar-links a.current {
   color: var(--ember);
@@ -164,23 +149,9 @@ header.topbar {
   text-decoration-thickness: 1.5px;
 }
 
-#theme-toggle {
-  background: transparent;
-  border: 1px solid var(--crack);
-  color: var(--ash-dim);
-  border-radius: 8px;
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: 0.9rem;
-}
-#theme-toggle:hover { border-color: var(--ember); color: var(--ember-bright); }
-
 /* ---------- shared section rhythm ---------- */
 section { padding-block: clamp(2.5rem, 6vw, 4.5rem); position: relative; }
+section[id] { scroll-margin-top: 72px; }
 
 .eyebrow {
   font-family: var(--mono);
@@ -234,22 +205,33 @@ h2.section-title {
 
 /* ---------- footer ---------- */
 footer {
-  border-top: 1px solid var(--crack);
-  padding-block: 2.5rem;
-  margin-top: 1rem;
+  border-top: 1px solid #1f2922;
+  padding-block: 1.75rem;
+  background: #080d0a;
 }
 .footer-row {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  flex-wrap: wrap;
   gap: 1rem;
-  font-family: var(--mono);
-  font-size: 0.82rem;
-  color: var(--smoke);
+  font-size: 0.7rem;
+  color: #758078;
 }
+.footer-row p { margin: 0; text-align: center; }
 .footer-row a { color: var(--smoke); }
 .footer-row a:hover { color: var(--ember-bright); }
+.footer-mark { display: inline-flex; align-items: center; gap: 0.55rem; }
+.footer-mark:hover { text-decoration: none; }
+.footer-links { display: flex; align-items: center; justify-content: flex-end; gap: 1.5rem; flex-wrap: wrap; }
+.footer-links span { color: inherit; }
+
+@media (max-width: 620px) {
+  .topbar-links { gap: 0.8rem; font-size: 0.73rem; }
+  .topbar-links a:first-child { display: none; }
+  .footer-row { grid-template-columns: 1fr; justify-items: start; }
+  .footer-row p { text-align: left; }
+  .footer-links { justify-content: flex-start; }
+}
 
 /* ---------- changelog prose ---------- */
 .prose {

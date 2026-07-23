@@ -1,0 +1,20 @@
+---
+interface Props {
+  showName?: boolean;
+  class?: string;
+}
+
+const { showName = true, class: className } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<span class:list={["loki-logo", className]} aria-label="Loki">
+  <img class="mark" src={`${base}/logo.png`} alt="" width="1438" height="913" />
+  {showName && <span class="name">LOKI</span>}
+</span>
+
+<style>
+  .loki-logo { display: inline-flex; align-items: center; gap: .7rem; color: #ecf1ed; }
+  .mark { width: 38px; height: auto; object-fit: contain; }
+  .name { font: 720 .98rem/1 var(--sans); letter-spacing: .24em; }
+</style>

@@ -129,3 +129,17 @@ success `odin build` currently reports for those combinations.
 
 CI runs this same sequence on Linux and macOS on every push and pull request
 (see `.github/workflows/ci.yml`).
+
+## Releasing
+
+The changelog is the source of truth for the current version — there's no
+separate `VERSION` file to keep in sync.
+
+1. Add a new entry to `site/src/content/changelog/` with the version you're
+   releasing in its `version:` frontmatter, and merge it to `main` (this also
+   deploys the updated site via `.github/workflows/pages.yml`).
+2. Run `./release.sh` — it reads the version from that entry, tags it
+   (`vX.Y.Z`), and pushes the tag.
+3. The tag push triggers `.github/workflows/release.yml`, which finds the
+   matching changelog entry and publishes a GitHub Release using it as the
+   notes.

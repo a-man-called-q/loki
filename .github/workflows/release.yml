@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Find matching changelog entry
+        id: changelog
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          file=$(grep -l "version: \"$version\"" site/src/content/changelog/*.md 2>/dev/null | head -n1 || true)
+
+          if [ -z "$file" ]; then
+            echo "::error::No changelog entry with version \"$version\" found in site/src/content/changelog — add one before tagging"
+            exit 1
+          fi
+
+          title=$(grep -m1 '^title:' "$file" | sed -E 's/^title: *"(.*)"$/\1/')
+          awk '/^---$/{c++; next} c>=2' "$file" > notes.md
+
+          echo "title=$title" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "${{ steps.changelog.outputs.title }}" \
+            --notes-file notes.md

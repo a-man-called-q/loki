@@ -1,0 +1,128 @@
+---
+interface Props {
+  seed?: string;
+  density?: number;
+}
+
+const { seed = "loki", density = 7 } = Astro.props;
+---
+
+<canvas class="crack-field" data-crack-seed={seed} data-density={density} aria-hidden="true"></canvas>
+
+<script>
+  function hashSeed(value: string) {
+    let hash = 2166136261;
+    for (let i = 0; i < value.length; i++) {
+      hash ^= value.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return hash >>> 0;
+  }
+
+  function randomFrom(seed: number) {
+    let state = seed;
+    return () => {
+      state += 0x6d2b79f5;
+      let value = state;
+      value = Math.imul(value ^ (value >>> 15), value | 1);
+      value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+      return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function setupCrackField(canvas: HTMLCanvasElement) {
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    const seed = hashSeed(canvas.dataset.crackSeed || "loki");
+    const density = Number(canvas.dataset.density || 7);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let frame = 0;
+    let animation = 0;
+
+    const draw = (time = 0) => {
+      const bounds = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(1, Math.round(bounds.width));
+      const height = Math.max(1, Math.round(bounds.height));
+      if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+      }
+
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      context.clearRect(0, 0, width, height);
+      const random = randomFrom(seed);
+      const pulse = reduceMotion ? 0.42 : 0.4 + Math.sin(time / 1800) * 0.055;
+
+      const branch = (x: number, y: number, angle: number, length: number, depth: number) => {
+        if (depth > 3 || length < 15) return;
+        let px = x;
+        let py = y;
+        const segments = 4 + Math.floor(random() * 4);
+        context.beginPath();
+        context.moveTo(px, py);
+        for (let step = 0; step < segments; step++) {
+          angle += (random() - 0.5) * 0.52;
+          const segment = length * (0.12 + random() * 0.09);
+          px += Math.cos(angle) * segment;
+          py += Math.sin(angle) * segment;
+          context.lineTo(px, py);
+          if (depth < 2 && step > 1 && random() > 0.72) {
+            branch(px, py, angle + (random() > 0.5 ? 1 : -1) * (0.55 + random() * 0.45), length * 0.54, depth + 1);
+          }
+        }
+        const alpha = Math.max(0.055, pulse - depth * 0.11);
+        context.strokeStyle = `rgba(57, 217, 122, ${alpha})`;
+        context.lineWidth = Math.max(0.55, 1.45 - depth * 0.3);
+        context.shadowColor = "rgba(57, 217, 122, .32)";
+        context.shadowBlur = depth === 0 ? 6 : 3;
+        context.stroke();
+      };
+
+      for (let index = 0; index < density; index++) {
+        const side = Math.floor(random() * 4);
+        let x = 0;
+        let y = 0;
+        let angle = 0;
+        if (side === 0) { x = -8; y = random() * height; angle = (random() - 0.5) * 0.9; }
+        if (side === 1) { x = width + 8; y = random() * height; angle = Math.PI + (random() - 0.5) * 0.9; }
+        if (side === 2) { x = random() * width; y = -8; angle = Math.PI / 2 + (random() - 0.5) * 0.9; }
+        if (side === 3) { x = random() * width; y = height + 8; angle = -Math.PI / 2 + (random() - 0.5) * 0.9; }
+        branch(x, y, angle, Math.min(width, height) * (0.72 + random() * 0.38), 0);
+      }
+    };
+
+    const animate = (time: number) => {
+      if (time - frame > 80) {
+        draw(time);
+        frame = time;
+      }
+      animation = requestAnimationFrame(animate);
+    };
+
+    const observer = new ResizeObserver(() => draw(performance.now()));
+    observer.observe(canvas);
+    draw();
+    if (!reduceMotion) animation = requestAnimationFrame(animate);
+
+    document.addEventListener("astro:before-swap", () => {
+      observer.disconnect();
+      cancelAnimationFrame(animation);
+    }, { once: true });
+  }
+
+  document.querySelectorAll<HTMLCanvasElement>(".crack-field").forEach(setupCrackField);
+</script>
+
+<style>
+  .crack-field {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+</style>
