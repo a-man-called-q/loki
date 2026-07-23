@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import DependencyGraph from "../components/DependencyGraph.astro";
+import Icon from "../components/Icon.astro";
 
 const installCommand =
   "curl -fsSL https://raw.githubusercontent.com/a-man-called-q/loki/main/install.sh | sh";
@@ -23,11 +24,11 @@ const installCommand =
 
         <div class="hero-actions">
           <a class="button button-primary" href="#install">
-            <span class="terminal-glyph" aria-hidden="true">&gt;_</span>
+            <span class="terminal-glyph" aria-hidden="true"><Icon name="terminal" /></span>
             Get Loki
           </a>
           <a class="button button-secondary" href="https://github.com/a-man-called-q/loki">
-            <span class="github-glyph" aria-hidden="true">●</span>
+            <span class="github-glyph" aria-hidden="true"><Icon name="github" /></span>
             View on GitHub
           </a>
         </div>
@@ -38,7 +39,7 @@ const installCommand =
             <span aria-hidden="true">$</span>
             <code title={installCommand}>{installCommand}</code>
             <button type="button" data-copy={installCommand} aria-label="Copy install command">
-              <span class="copy-icon" aria-hidden="true"></span>
+              <span class="copy-icon" aria-hidden="true"><Icon name="copy" /></span>
               <span class="copy-label">Copy</span>
             </button>
           </div>
@@ -52,7 +53,7 @@ const installCommand =
 
     <section class="benefits" aria-label="Why Loki">
       <article>
-        <span class="feature-icon leaf-icon" aria-hidden="true"></span>
+        <span class="feature-icon" aria-hidden="true"><Icon name="leaf" /></span>
         <h2>Start clean</h2>
         <p>
           Scaffold new apps and packages with sensible defaults for Odin. Keep
@@ -60,9 +61,7 @@ const installCommand =
         </p>
       </article>
       <article>
-        <span class="feature-icon people-icon" aria-hidden="true">
-          <i></i><i></i>
-        </span>
+        <span class="feature-icon" aria-hidden="true"><Icon name="users" /></span>
         <h2>Share locally</h2>
         <p>
           Link packages instantly across the workspace. Iterate fast without
@@ -70,7 +69,7 @@ const installCommand =
         </p>
       </article>
       <article>
-        <span class="feature-icon globe-icon" aria-hidden="true"></span>
+        <span class="feature-icon gold" aria-hidden="true"><Icon name="world" /></span>
         <h2>Ship anywhere</h2>
         <p>
           Pin vendor dependencies for reproducible builds and cross-compile for
@@ -89,16 +88,16 @@ const installCommand =
         <article class="code-card tree-card" aria-label="Example Loki workspace structure">
           <div class="tree-root">my-workspace/</div>
           <div class="tree">
-            <div><span class="branch">├──</span> <span class="file-icon">◆</span> loki.json</div>
-            <div><span class="branch">├──</span> <span class="folder-icon gold"></span> apps/</div>
-            <div class="depth-1"><span class="branch">├──</span> <span class="folder-icon"></span> web/</div>
-            <div class="depth-1"><span class="branch">└──</span> <span class="folder-icon"></span> cli/</div>
-            <div><span class="branch">├──</span> <span class="folder-icon gold"></span> packages/</div>
-            <div class="depth-1"><span class="branch">├──</span> <span class="folder-icon"></span> local/</div>
+            <div><span class="branch">├──</span> <span class="file-icon"><Icon name="file" /></span> loki.json</div>
+            <div><span class="branch">├──</span> <span class="folder-icon gold"><Icon name="folder" /></span> apps/</div>
+            <div class="depth-1"><span class="branch">├──</span> <span class="folder-icon"><Icon name="folder" /></span> web/</div>
+            <div class="depth-1"><span class="branch">└──</span> <span class="folder-icon"><Icon name="folder" /></span> cli/</div>
+            <div><span class="branch">├──</span> <span class="folder-icon gold"><Icon name="folder" /></span> packages/</div>
+            <div class="depth-1"><span class="branch">├──</span> <span class="folder-icon"><Icon name="folder" /></span> local/</div>
             <div class="depth-2"><span class="branch">├──</span> core/</div>
             <div class="depth-2"><span class="branch">└──</span> utils/</div>
-            <div class="depth-1"><span class="branch">└──</span> <span class="folder-icon green"></span> vendor/</div>
-            <div><span class="branch">└──</span> <span class="file-icon">◇</span> README.md</div>
+            <div class="depth-1"><span class="branch">└──</span> <span class="folder-icon green"><Icon name="folder" /></span> vendor/</div>
+            <div><span class="branch">└──</span> <span class="file-icon"><Icon name="file" /></span> README.md</div>
           </div>
         </article>
 
@@ -159,11 +158,11 @@ const installCommand =
         <p>Install Loki and scaffold your first app in seconds.</p>
         <div>
           <a class="button button-dark-green" href="#install">
-            <span class="terminal-glyph" aria-hidden="true">&gt;_</span>
+            <span class="terminal-glyph" aria-hidden="true"><Icon name="terminal" /></span>
             Get Loki
           </a>
           <a class="button button-light" href="https://github.com/a-man-called-q/loki">
-            <span class="github-glyph" aria-hidden="true">●</span>
+            <span class="github-glyph" aria-hidden="true"><Icon name="github" /></span>
             View on GitHub
           </a>
         </div>
@@ -260,17 +259,10 @@ const installCommand =
     background: rgba(13, 19, 15, .72);
   }
   .button-secondary:hover { border-color: #89938d; }
-  .terminal-glyph { font: 700 1rem var(--mono); }
-  .github-glyph {
-    display: grid;
-    place-items: center;
-    width: 19px;
-    height: 19px;
-    border-radius: 50%;
-    color: #080d0a;
-    background: currentColor;
-    box-shadow: inset 0 0 0 5px #edf1ed;
-  }
+  .terminal-glyph { display: inline-flex; width: 18px; height: 18px; }
+  .github-glyph { display: inline-flex; width: 18px; height: 18px; }
+  :global(.terminal-glyph svg),
+  :global(.github-glyph svg) { width: 100%; height: 100%; display: block; }
 
   .quick-install { max-width: 570px; margin-top: 2rem; }
   .quick-install > p {
@@ -310,24 +302,8 @@ const installCommand =
     cursor: pointer;
   }
   .command-line button:hover { color: #66e895; }
-  .copy-icon {
-    position: relative;
-    width: 13px;
-    height: 13px;
-    border: 1px solid currentColor;
-    border-radius: 2px;
-  }
-  .copy-icon::before {
-    content: "";
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    top: -4px;
-    left: -4px;
-    border: 1px solid currentColor;
-    border-radius: 2px;
-    background: #0d130f;
-  }
+  .copy-icon { display: inline-flex; width: 14px; height: 14px; }
+  :global(.copy-icon svg) { width: 100%; height: 100%; display: block; }
 
   .hero-visual {
     display: grid;
@@ -366,70 +342,9 @@ const installCommand =
     font-size: .9rem;
     line-height: 1.62;
   }
-  .feature-icon { position: relative; display: block; width: 31px; height: 31px; color: #62e494; }
-  .leaf-icon {
-    width: 26px;
-    height: 30px;
-    border: 2px solid currentColor;
-    border-radius: 100% 0 100% 0;
-    transform: rotate(-12deg);
-  }
-  .leaf-icon::after {
-    content: "";
-    position: absolute;
-    width: 28px;
-    height: 2px;
-    top: 16px;
-    left: -7px;
-    background: currentColor;
-    transform: rotate(-42deg);
-    transform-origin: center;
-  }
-  .people-icon i {
-    position: absolute;
-    top: 2px;
-    width: 8px;
-    height: 8px;
-    border: 2px solid currentColor;
-    border-radius: 50%;
-  }
-  .people-icon i:first-child { left: 4px; }
-  .people-icon i:last-child { right: 4px; }
-  .people-icon::before,
-  .people-icon::after {
-    content: "";
-    position: absolute;
-    bottom: 2px;
-    width: 14px;
-    height: 12px;
-    border: 2px solid currentColor;
-    border-bottom: 0;
-    border-radius: 12px 12px 0 0;
-  }
-  .people-icon::before { left: 0; }
-  .people-icon::after { right: 0; }
-  .globe-icon {
-    color: #efbd4d;
-    border: 2px solid currentColor;
-    border-radius: 50%;
-  }
-  .globe-icon::before {
-    content: "";
-    position: absolute;
-    inset: -2px 7px;
-    border: 2px solid currentColor;
-    border-top-color: transparent;
-    border-bottom-color: transparent;
-    border-radius: 50%;
-  }
-  .globe-icon::after {
-    content: "";
-    position: absolute;
-    left: 2px;
-    right: 2px;
-    top: 50%;
-    border-top: 2px solid currentColor;
-  }
+  .feature-icon { display: block; width: 31px; height: 31px; color: #62e494; }
+  .feature-icon.gold { color: #efbd4d; }
+  :global(.feature-icon svg) { width: 100%; height: 100%; display: block; }
 
   .workspace-section,
   .terminal-section {
@@ -474,25 +389,25 @@ const installCommand =
   .depth-1 { padding-left: 2rem; }
   .depth-2 { padding-left: 4rem; color: #9ca79f; }
   .folder-icon {
-    display: inline-block;
-    width: 13px;
-    height: 9px;
+    display: inline-flex;
+    width: 14px;
+    height: 14px;
     margin-right: .35rem;
-    border-radius: 1px;
-    background: #d9ded9;
+    vertical-align: -2px;
+    color: #d9ded9;
   }
-  .folder-icon::before {
-    content: "";
-    display: block;
-    width: 6px;
-    height: 2px;
-    margin-top: -2px;
-    border-radius: 1px 1px 0 0;
-    background: inherit;
+  .folder-icon.gold { color: #efbd4d; }
+  .folder-icon.green { color: #69b95f; }
+  .file-icon {
+    display: inline-flex;
+    width: 12px;
+    height: 12px;
+    margin-right: .35rem;
+    vertical-align: -1px;
+    color: #b7c0ba;
   }
-  .folder-icon.gold { background: #efbd4d; }
-  .folder-icon.green { background: #69b95f; }
-  .file-icon { color: #b7c0ba; font-size: .65rem; }
+  :global(.folder-icon svg),
+  :global(.file-icon svg) { width: 100%; height: 100%; display: block; }
 
   .manifest-card { padding: 1.25rem 1.4rem; }
   .code-list {
@@ -571,7 +486,6 @@ const installCommand =
   .button-dark-green { color: #fff; background: #218c49; }
   .button-dark-green:hover { background: #18753b; }
   .button-light { color: #111712; border-color: #424a44; background: transparent; }
-  .button-light .github-glyph { box-shadow: inset 0 0 0 5px #111712; }
 
   @media (max-width: 960px) {
     .hero { grid-template-columns: 1fr; padding-top: 5.5rem; }
